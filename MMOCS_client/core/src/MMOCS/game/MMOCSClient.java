@@ -1,5 +1,6 @@
 package MMOCS.game;
 
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -16,8 +17,9 @@ public class MMOCSClient extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		skt = new Socket();
 		try{
-			skt = new Socket("imfake", 3453);
+			skt.connect(new InetSocketAddress("77.125.250.34", 9098), 5000);
 			img = new Texture("badlogic.jpg");
 			skt.close();
 		}
