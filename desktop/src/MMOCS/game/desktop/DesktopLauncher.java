@@ -7,6 +7,9 @@ import MMOCS.game.MMOCSClient;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = MMOCSClient.TITLE;
+		config.width = MMOCSClient.WIDTH * MMOCSClient.SCALE;
+		config.height = MMOCSClient.HEIGHT * MMOCSClient.SCALE;
 		new LwjglApplication(new MMOCSClient(), config);
 	}
 }
