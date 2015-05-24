@@ -67,30 +67,54 @@ public class GameMap {
 		map.get(y).set(x, tile);
 	}
 	
+	public Tile lookInDirection(short dir){
+		int x = (colsNum()-1) / 2;
+		int y = (rowsNum()-1) / 2;
+		switch(dir){
+		case LEFT:
+			return map.get(y).get(x-1);
+		case UP:
+			return map.get(y-1).get(x);
+		case RIGHT:
+			return map.get(y).get(x+1);
+		case DOWN:
+			return map.get(y+1).get(x);
+		default: break;
+		}
+		return null;
+	}
+	
 	public void moveCenter(short dir){
+		LinkedList<Tile> list;
 		switch(dir){
 		case LEFT:
 			center.setX(center.X() -1);
 			for(int i = 0; i < rowsNum() ; i++){
 				map.get(i).addFirst(null);
-				map.removeLast();
+				map.get(i).removeLast();
 			}
 			break;
 		case UP:
 			center.setY(center.Y() + 1);
-			map.addFirst(null);
+			list = new LinkedList<Tile>();
+			for(int i = 0; i < colsNum(); i++)
+				list.add(null);
+			map.addFirst(list);
 			map.removeLast();
 			break;
 		case RIGHT:
 			center.setX(center.X() + 1);
 			for(int i = 0; i < rowsNum() ; i++){
 				map.get(i).addLast(null);
-				map.removeFirst();
+				map.get(i).removeFirst();
 			}
 			break;
 		case DOWN:
 			center.setY(center.Y() - 1);
-			map.addLast(null);
+			list = new LinkedList<Tile>();
+			for(int i = 0; i < colsNum(); i++)
+				list.add(null);
+			map.addLast(list);
 			map.removeFirst();
 			break;
 		default: break;
@@ -125,7 +149,8 @@ public class GameMap {
 				if(tile != null){
 					sb.begin();
 					sb.draw(floors.getTexture(tile.getFloorType().name()), j*40, 40*(height-i));
-					sb.draw(objects.getTexture(tile.getMapObjectType().name()), j*40, 40*(height-i));
+					if(tile.getMapObjectType() != null)
+						sb.draw(objects.getTexture(tile.getMapObjectType().name()), j*40, 40*(height-i));
 					sb.end();
 				}
 				else{
@@ -135,6 +160,11 @@ public class GameMap {
 				}
 			}
 		}
+		//before network is here
+		sb.begin();
+		sb.draw(floors.getTexture(FloorType.WOOD.name()), ((width-1)/2)*40, 40*(height-((height-1)/2)));
+		sb.draw(objects.getTexture(MapObjectType.PLAYER.name()), ((width-1)/2)*40, 40*(height-((height-1)/2)));
+		sb.end();
 	}
 	
 	
@@ -142,24 +172,24 @@ public class GameMap {
 		floors = new Content();
 		objects = new Content();
 		
-		floors.loadTexture("red.jpg", "void");
-		floors.loadTexture("red.jpg",FloorType.GRASS.name());
-		floors.loadTexture("red.jpg",FloorType.DIRT.name());
-		floors.loadTexture("red.jpg",FloorType.WATER.name());
-		floors.loadTexture("red.jpg",FloorType.MUD.name());
-		floors.loadTexture("red.jpg",FloorType.SAND.name());
-		floors.loadTexture("red.jpg",FloorType.STONE.name());
-		floors.loadTexture("red.jpg",FloorType.WOOD.name());
-		floors.loadTexture("red.jpg",FloorType.STONE_BRICK.name());
+		floors.loadTexture("void.jpg", "void");//not official
+		floors.loadTexture("red.jpg",FloorType.GRASS.name());//missing	
+		floors.loadTexture("red.jpg",FloorType.DIRT.name());//missing
+		floors.loadTexture("blue.jpg",FloorType.WATER.name()); //not official
+		floors.loadTexture("red.jpg",FloorType.MUD.name());//missing
+		floors.loadTexture("red.jpg",FloorType.SAND.name());//missing
+		floors.loadTexture("red.jpg",FloorType.STONE.name()); //missing
+		floors.loadTexture("Wood_floor.png",FloorType.WOOD.name());
+		floors.loadTexture("Stone_brick_floor.png",FloorType.STONE_BRICK.name());
 		
-		objects.loadTexture("red.jpg",MapObjectType.PLAYER.name()); 
-		objects.loadTexture("red.jpg",MapObjectType.PILE.name());
-		objects.loadTexture("red.jpg",MapObjectType.MONSTER.name());
-		objects.loadTexture("red.jpg",MapObjectType.TREE.name());
-		objects.loadTexture("red.jpg",MapObjectType.BUSH.name());
-		objects.loadTexture("red.jpg",MapObjectType.ROCK.name());
-		objects.loadTexture("red.jpg",MapObjectType.WALL_WOOD.name());
-		objects.loadTexture("red.jpg",MapObjectType.WALL_STONE.name());
+		objects.loadTexture("player.png",MapObjectType.PLAYER.name()); 
+		objects.loadTexture("pile.png",MapObjectType.PILE.name());
+		objects.loadTexture("monster.png",MapObjectType.MONSTER.name());
+		objects.loadTexture("tree.png",MapObjectType.TREE.name());
+		objects.loadTexture("Bush.png",MapObjectType.BUSH.name());
+		objects.loadTexture("Rock.png",MapObjectType.ROCK.name());
+		objects.loadTexture("Wood_wall.png",MapObjectType.WALL_WOOD.name());
+		objects.loadTexture("Stone_wall.png",MapObjectType.WALL_STONE.name());
 		
 	}
 }

@@ -4,9 +4,11 @@ public class MyInput {
 	public static boolean[] keys;
 	public static boolean[] pkeys;
 	
-	public static final int NUM_KEYS = 2;
+	public static final int NUM_KEYS = 4;
 	public static final int UP_KEY = 0;
 	public static final int DOWN_KEY = 1;
+	public static final int RIGHT_KEY = 2;
+	public static final int LEFT_KEY = 3;
 	
 	static {
 		keys = new boolean[NUM_KEYS];

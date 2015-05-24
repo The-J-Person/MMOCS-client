@@ -65,4 +65,12 @@ public class Tile {
 		if(((Tile)o).c.Y()!=c.Y()) return false;
 		return true;
 	}
+	
+	public boolean canMoveOn(){
+		return (mo == MapObjectType.PILE || mo == null) && (f != null && f != FloorType.WATER);
+	}
+	
+	public boolean canPickUp(){
+		return mo == MapObjectType.PILE;
+	}
 }
