@@ -63,7 +63,7 @@ public class GameMap {
 			return;
 		int x,y;
 		x = (int)((tile.getCoordinate().X() - center.X()) + ((colsNum()-1)/2));
-		y = (int)((tile.getCoordinate().Y() - center.Y()) + ((rowsNum()-1)/2));
+		y = (int)((center.Y() - tile.getCoordinate().Y()) + ((rowsNum()-1)/2));
 		map.get(y).set(x, tile);
 	}
 	
@@ -149,7 +149,7 @@ public class GameMap {
 				if(tile != null){
 					sb.begin();
 					sb.draw(floors.getTexture(tile.getFloorType().name()), j*40, 40*(height-i));
-					if(tile.getMapObjectType() != null)
+					if(tile.getMapObjectType() != MapObjectType.NONE)
 						sb.draw(objects.getTexture(tile.getMapObjectType().name()), j*40, 40*(height-i));
 					sb.end();
 				}
@@ -165,6 +165,28 @@ public class GameMap {
 		sb.draw(floors.getTexture(FloorType.WOOD.name()), ((width-1)/2)*40, 40*(height-((height-1)/2)));
 		sb.draw(objects.getTexture(MapObjectType.PLAYER.name()), ((width-1)/2)*40, 40*(height-((height-1)/2)));
 		sb.end();
+	}
+	
+	public void MapAction(short dir){
+		Tile tile = lookInDirection(dir);
+		if(tile == null)
+			return;
+		if(tile.canMoveOn()){
+			if(tile.canPickUp()){
+				//here we need to send pick up action
+				System.out.println("im picking things up");
+				tile.setMapObjectType(MapObjectType.NONE);
+			}
+			moveCenter(dir);
+		}
+		else if (tile.canAttack()){
+			//here we need to send attack command
+			System.out.println("dieeeee you monster");
+		}
+		else if (tile.canHarvest()){
+			//here we need to send harvest command
+			System.out.println("im a lousy farmer");
+		}
 	}
 	
 	

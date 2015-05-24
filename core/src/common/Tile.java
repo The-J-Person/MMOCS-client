@@ -67,10 +67,18 @@ public class Tile {
 	}
 	
 	public boolean canMoveOn(){
-		return (mo == MapObjectType.PILE || mo == null) && (f != null && f != FloorType.WATER);
+		return (f.canMoveOn() && mo.canMoveOn());
 	}
 	
 	public boolean canPickUp(){
-		return mo == MapObjectType.PILE;
+		return mo.canPickUp();
+	}
+	
+	public boolean canHarvest(){ 
+		return mo.canHarvest();
+	}
+	
+	public boolean canAttack(){
+		return mo.canAttack();
 	}
 }

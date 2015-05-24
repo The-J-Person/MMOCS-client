@@ -35,7 +35,11 @@ public class Play extends GameState {
 		map = new GameMap(gsm.getGame().getSpriteBatch(),new Coordinate(0,0), MMOCSClient.WIDTH, MMOCSClient.HEIGHT);
 		//testing area
 		map.update(new Tile(2,0,FloorType.STONE_BRICK, MapObjectType.MONSTER));
-		map.update(new Tile(0,2,FloorType.WATER, null));
+		map.update(new Tile(-3,-3,FloorType.STONE_BRICK, MapObjectType.MONSTER));
+		map.update(new Tile(1,0,FloorType.STONE_BRICK, MapObjectType.NONE));
+		map.update(new Tile(1,1,FloorType.STONE_BRICK, MapObjectType.NONE));
+		map.update(new Tile(1,2,FloorType.STONE_BRICK, MapObjectType.NONE));
+		map.update(new Tile(0,2,FloorType.WATER, MapObjectType.NONE));
 		map.update(new Tile(2,2,FloorType.WOOD, MapObjectType.PILE));
 		//end of testing area
 		world = new World(new Vector2(0,0),true);
@@ -58,61 +62,23 @@ public class Play extends GameState {
 	}
 	@Override
 	public void handleInput() {
-		Tile tile;
 		if(MyInput.isPressed(MyInput.DOWN_KEY)){
-			tile = map.lookInDirection(map.DOWN);
-			if(tile == null)
-				return;
-			if(tile.canMoveOn()){
-				if(tile.canPickUp()){
-					System.out.println("im picking things up");
-					tile.setMapObjectType(null);
-				}
-				map.moveCenter(GameMap.DOWN);
-			}
+			map.MapAction(GameMap.DOWN);
 		}
 		else if(MyInput.isPressed(MyInput.UP_KEY)){
-			tile = map.lookInDirection(map.UP);
-			if(tile == null)
-				return;
-			if(tile.canMoveOn()){
-				if(tile.canPickUp()){
-					System.out.println("im picking things up");
-					tile.setMapObjectType(null);
-				}
-				map.moveCenter(GameMap.UP);
-			}
+			map.MapAction(GameMap.UP);
 		}
 		else if(MyInput.isPressed(MyInput.LEFT_KEY)){
-			tile = map.lookInDirection(map.LEFT);
-			if(tile == null)
-				return;
-			if(tile.canMoveOn()){
-				if(tile.canPickUp()){
-					System.out.println("im picking things up");
-					tile.setMapObjectType(null);
-				}
-				map.moveCenter(GameMap.LEFT);
-			}
+			map.MapAction(GameMap.LEFT);
 		}
 		else if(MyInput.isPressed(MyInput.RIGHT_KEY)){
-			tile = map.lookInDirection(map.RIGHT);
-			if(tile == null)
-				return;
-			if(tile.canMoveOn()){
-				if(tile.canPickUp()){
-					System.out.println("im picking things up");
-					tile.setMapObjectType(null);
-				}
-				map.moveCenter(GameMap.RIGHT);
-			}		
+			map.MapAction(GameMap.RIGHT);
 		}
 
 	}
 
 	@Override
 	public void update(float dt) {
-		//map.moveCenter(GameMap.LEFT);
 		handleInput();
 		
 		world.step(dt,1,1);
@@ -136,5 +102,4 @@ public class Play extends GameState {
 		// TODO Auto-generated method stub
 
 	}
-
 }
