@@ -1,10 +1,13 @@
 package common;
 
+import java.io.Serializable;
+
 /**
  * A class to represent coordinates. 
  * Used by the WorldMap class.
  */
-public class Coordinate {
+public class Coordinate implements Serializable{
+	static final long serialVersionUID = 12301132;
 	/*
 	 * the Coordinates are in x,y format (horizontal then vertical)
 	 */
@@ -15,6 +18,12 @@ public class Coordinate {
 	 * @param X axis, and
 	 * @param Y axis
 	 */
+	public Coordinate()
+	{
+		x=0;
+		y=0;
+	}
+	
 	public Coordinate(long X, long Y)
 	{
 		x=X;

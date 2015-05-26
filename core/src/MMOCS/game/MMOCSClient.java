@@ -27,8 +27,6 @@ public class MMOCSClient extends ApplicationAdapter {
 	private OrthographicCamera hudCam;
 	private GameStateManager gsm;
 	private float accum;
-	Texture img;
-	Socket skt;
 	
 	public SpriteBatch getSpriteBatch(){return batch;}
 	public OrthographicCamera getCam(){return cam;}
@@ -37,28 +35,17 @@ public class MMOCSClient extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		//to be deleted
+		sprites = new Content();
+		sprites.loadTexture("blue.jpg", "blue");
+		
 		Gdx.input.setInputProcessor(new MyInputProcessor());
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, WIDTH , HEIGHT);
 		hudCam = new OrthographicCamera();
 		hudCam.setToOrtho(false, WIDTH , HEIGHT);
-		sprites = new Content();
-		sprites.loadTexture("blue.jpg", "blue");
-		sprites.loadTexture("red.jpg", "red");
-		sprites.loadTexture("example.jpg", "example");
 		gsm = new GameStateManager(this);
-		
-		
-		skt = new Socket();
-		try{
-			skt.connect(new InetSocketAddress("77.125.250.34", 9098), 1000);
-			img = new Texture("badlogic.jpg");
-			skt.close();
-		}
-		catch(Exception e){
-			img = new Texture("sadface.jpg");
-		}
 	}
 
 	@Override
@@ -70,9 +57,6 @@ public class MMOCSClient extends ApplicationAdapter {
 			gsm.render();
 			MyInput.update();
 		}
-		batch.begin();
-		batch.draw(sprites.getTexture("blue"), 0,0);
-		batch.end();
 		batch.setProjectionMatrix(cam.combined);
 	}
 }

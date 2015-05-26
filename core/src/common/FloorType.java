@@ -14,6 +14,8 @@ public enum FloorType {
 	WOOD,
 	STONE_BRICK;
 	
+	static final long serialVersionUID = 3222322;
+	
 	public boolean canMoveOn(){
 		return this != WATER;
 	}

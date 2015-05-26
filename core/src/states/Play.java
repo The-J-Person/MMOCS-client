@@ -3,6 +3,7 @@ package states;
 import handlers.GameMap;
 import handlers.GameStateManager;
 import handlers.MyInput;
+import network.Connection;
 import MMOCS.game.MMOCSClient;
 
 import com.badlogic.gdx.Gdx;
@@ -28,18 +29,22 @@ public class Play extends GameState {
 	private Box2DDebugRenderer b2dr;
 	private GameMap map;
 	private Player player;
-	
+	private Connection con;
 	public Play(GameStateManager gsm){
 		super(gsm);
-		
 		map = new GameMap(gsm.getGame().getSpriteBatch(),new Coordinate(0,0), MMOCSClient.WIDTH, MMOCSClient.HEIGHT);
+		con = new Connection();
+		con.Connect();
+		player = new Player(null);
+		//con.StartReceiver(map, player);
+		
 		//testing area
 		map.update(new Tile(2,0,FloorType.STONE_BRICK, MapObjectType.MONSTER));
 		map.update(new Tile(-3,-3,FloorType.STONE_BRICK, MapObjectType.MONSTER));
-		map.update(new Tile(1,0,FloorType.STONE_BRICK, MapObjectType.NONE));
-		map.update(new Tile(1,1,FloorType.STONE_BRICK, MapObjectType.NONE));
-		map.update(new Tile(1,2,FloorType.STONE_BRICK, MapObjectType.NONE));
-		map.update(new Tile(0,2,FloorType.WATER, MapObjectType.NONE));
+		map.update(new Tile(1,0,FloorType.STONE_BRICK, null));
+		map.update(new Tile(1,1,FloorType.STONE_BRICK, null));
+		map.update(new Tile(1,2,FloorType.STONE_BRICK, null));
+		map.update(new Tile(0,2,FloorType.WATER, null));
 		map.update(new Tile(2,2,FloorType.WOOD, MapObjectType.PILE));
 		//end of testing area
 		world = new World(new Vector2(0,0),true);
@@ -79,6 +84,7 @@ public class Play extends GameState {
 
 	@Override
 	public void update(float dt) {
+		
 		handleInput();
 		
 		world.step(dt,1,1);

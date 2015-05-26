@@ -149,7 +149,7 @@ public class GameMap {
 				if(tile != null){
 					sb.begin();
 					sb.draw(floors.getTexture(tile.getFloorType().name()), j*40, 40*(height-i));
-					if(tile.getMapObjectType() != MapObjectType.NONE)
+					if(tile.getMapObjectType() != null)
 						sb.draw(objects.getTexture(tile.getMapObjectType().name()), j*40, 40*(height-i));
 					sb.end();
 				}
@@ -175,7 +175,7 @@ public class GameMap {
 			if(tile.canPickUp()){
 				//here we need to send pick up action
 				System.out.println("im picking things up");
-				tile.setMapObjectType(MapObjectType.NONE);
+				tile.setMapObjectType(null);
 			}
 			moveCenter(dir);
 		}
