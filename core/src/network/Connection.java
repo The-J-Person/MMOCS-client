@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Stack;
+
+import common.Acknowledgement;
 
 import entities.Player;
 
@@ -15,11 +18,13 @@ public class Connection {
 	private Socket skt;
 	private RequestSender sender;
 	private UpdateReceiver receiver;
+	private Stack<Acknowledgement> ack;
 	
 	public Connection(){
 		skt = new Socket();
 		sender = null;
 		receiver = null;
+		ack = new Stack<Acknowledgement>();
 	}
 	
 	public boolean Connect(){
@@ -61,6 +66,12 @@ public class Connection {
 		receiver.setStop(true);
 	}
 	
+	public RequestSender getRequestSender(){ return sender; }
+	public Acknowledgement getAck() {
+		if(!ack.empty())
+			return ack.pop();
+		return null;
+	}
 	
 	
 	

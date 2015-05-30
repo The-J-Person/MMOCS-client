@@ -1,7 +1,9 @@
 package handlers;
 
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 
 public class MyInputProcessor extends InputAdapter {
 	
@@ -35,6 +37,18 @@ public class MyInputProcessor extends InputAdapter {
 		}
 		return true;
 	}
+	
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (button == Buttons.LEFT) {
+        	MyInput.setMouseXY(MyInput.LEFT_MOUSE,screenX, screenY);
+            return true;
+        }
+        if (button == Buttons.RIGHT){
+        	MyInput.setMouseXY(MyInput.RIGHT_MOUSE,screenX, screenY);
+            return true;
+        }
+        return false;
+    }
 	
 
 }

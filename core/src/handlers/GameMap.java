@@ -10,12 +10,6 @@ import common.MapObjectType;
 import common.Tile;
 
 public class GameMap {
-	
-	public static final short LEFT = 0;
-	public static final short UP = 1;
-	public static final short RIGHT = 2;
-	public static final short DOWN = 3;
-	
 	private Coordinate center;
 	private int width,height;
 	private LinkedList<LinkedList<Tile>> map;
@@ -44,7 +38,7 @@ public class GameMap {
 	
 	public Coordinate getCenter() { return center; }
 	
-	public boolean inRange(Tile tile){
+	public boolean tileInRange(Tile tile){
 		int x, y;
 		x = (colsNum()-1)/2;
 		y = (rowsNum()-1)/2;
@@ -55,11 +49,33 @@ public class GameMap {
 		return true;
 	}
 	
+	public int parsePixelsX(int pixelsX){
+		return pixelsX/80 +1;
+	}
+	
+	public int parsePixelsY(int pixelsY){
+		return pixelsY/80 +1;
+	}
+	
+	public boolean mouseOnMap(int pixelsX , int pixelsY){
+		if (parsePixelsY(pixelsY) <= height)
+			return true;
+		return false;
+	}
+	
+	public boolean isNearby(int x, int y){
+		if( x == getMiddleX() && y == getMiddleY() )
+			return false;
+		if( Math.abs(x - getMiddleX()) <= 1 && Math.abs(y - getMiddleY()) <= 1)
+			return true;
+		return false;
+	}
+	
 	public int rowsNum(){ return map.size(); }
 	public int colsNum(){ return map.getFirst().size();}
 	
 	public void update(Tile tile){
-		if (!inRange(tile))
+		if (!tileInRange(tile))
 			return;
 		int x,y;
 		x = (int)((tile.getCoordinate().X() - center.X()) + ((colsNum()-1)/2));
@@ -67,34 +83,34 @@ public class GameMap {
 		map.get(y).set(x, tile);
 	}
 	
-	public Tile lookInDirection(short dir){
+	public Tile lookInDirection(Direction dir){
 		int x = (colsNum()-1) / 2;
 		int y = (rowsNum()-1) / 2;
 		switch(dir){
-		case LEFT:
+		case WEST:
 			return map.get(y).get(x-1);
-		case UP:
+		case NORTH:
 			return map.get(y-1).get(x);
-		case RIGHT:
+		case EAST:
 			return map.get(y).get(x+1);
-		case DOWN:
+		case SOUTH:
 			return map.get(y+1).get(x);
 		default: break;
 		}
 		return null;
 	}
 	
-	public void moveCenter(short dir){
+	public void moveCenter(Direction dir){
 		LinkedList<Tile> list;
 		switch(dir){
-		case LEFT:
+		case WEST:
 			center.setX(center.X() -1);
 			for(int i = 0; i < rowsNum() ; i++){
 				map.get(i).addFirst(null);
 				map.get(i).removeLast();
 			}
 			break;
-		case UP:
+		case NORTH:
 			center.setY(center.Y() + 1);
 			list = new LinkedList<Tile>();
 			for(int i = 0; i < colsNum(); i++)
@@ -102,14 +118,14 @@ public class GameMap {
 			map.addFirst(list);
 			map.removeLast();
 			break;
-		case RIGHT:
+		case EAST:
 			center.setX(center.X() + 1);
 			for(int i = 0; i < rowsNum() ; i++){
 				map.get(i).addLast(null);
 				map.get(i).removeFirst();
 			}
 			break;
-		case DOWN:
+		case SOUTH:
 			center.setY(center.Y() - 1);
 			list = new LinkedList<Tile>();
 			for(int i = 0; i < colsNum(); i++)
@@ -167,7 +183,7 @@ public class GameMap {
 		sb.end();
 	}
 	
-	public void MapAction(short dir){
+	public void MapAction(Direction dir){
 		Tile tile = lookInDirection(dir);
 		if(tile == null)
 			return;
@@ -188,6 +204,13 @@ public class GameMap {
 			System.out.println("im a lousy farmer");
 		}
 	}
+	
+	public Tile getTile(int x, int y){
+		return map.get(y).get(x);
+	}
+	
+	public int getMiddleX(){ return (colsNum()-1)/2; }
+	public int getMiddleY(){ return (rowsNum()-1)/2; }
 	
 	
 	private void setSprites(){

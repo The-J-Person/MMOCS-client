@@ -21,3 +21,4 @@ public class Acknowledgement implements Serializable{
 	public RequestType getRequestType(){ return req; }
 	public boolean getAck(){ return ack; }
 }
+

@@ -3,27 +3,31 @@ package network;
 import handlers.GameMap;
 
 import java.io.ObjectInputStream;
+import java.util.Stack;
 
+import common.Acknowledgement;
 import common.Tile;
 import common.Update;
 
 import entities.Player;
 
 public class UpdateReceiver extends Thread {
-	private volatile boolean stop;
+	private static volatile boolean stop;
 	private ObjectInputStream stream;
 	private GameMap map;
 	private Player player;
+	private Stack<Acknowledgement> ack;
 	//should add some object for acks
 	
 	public UpdateReceiver(ObjectInputStream stream, GameMap map , Player player){
 		this.stream = stream;
 		this.map = map;
 		this.player = player;
+		this.ack = new Stack<Acknowledgement>();
 		stop = false;
 	}
 	
-	public void setStop(boolean state){ stop = state; }
+	public static void setStop(boolean state){ stop = state; }
 	
 	public void run(){
 		while(!stop){
@@ -34,7 +38,7 @@ public class UpdateReceiver extends Thread {
 					map.update((Tile)up.getData());
 					break;
 				case ACKNOWLEDGMENT:
-					//here i should make some ack queue
+					ack.push((Acknowledgement) up.getData());
 					break;
 				case HIT_POINTS: 
 					//update the hitpoints of the player

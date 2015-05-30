@@ -5,7 +5,7 @@ import java.io.ObjectOutputStream;
 
 import common.Request;
 
-public class RequestSender {
+public class RequestSender{
 	ObjectOutputStream stream;
 	
 	public RequestSender(ObjectOutputStream stream){

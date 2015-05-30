@@ -6,28 +6,50 @@ package common;
  *
  */
 public enum MapObjectType {
-	PLAYER, //Identification of player's own self and other players.
-	PILE, //Group of objects occupying same tile
-	MONSTER,
-	TREE,
-	BUSH,
-	ROCK,
-	WALL_WOOD,
-	WALL_STONE;
+	PLAYER(0), //Identification of player's own self and other players.
+	MONSTER(1),
+	TREE(2),
+	BUSH(3),
+	ROCK(4),
+	WALL_WOOD(5),
+	WALL_STONE(6);
 	
 	static final long serialVersionUID = 8975595;
+	private final int ID;
 	
-	public boolean canMoveOn(){
-		return this == PILE;
+	private MapObjectType(int ID)
+	{
+		this.ID = ID;
 	}
-	public boolean canPickUp(){
-		return this == PILE;
+	
+	public int getID()
+	{
+		return ID;
 	}
 	public boolean canAttack(){
 		return this == MONSTER;
 	}
 	public boolean canHarvest(){
-		return (this == TREE || this == BUSH || this == ROCK);
+		//return (this == TREE || this == BUSH || this == ROCK);
+		return (this != PLAYER && this != MONSTER);
 	}
 	
+	public Resource resource()
+	{
+		switch(this)
+		{
+		case TREE:
+			return Resource.WOOD;
+		case BUSH:
+			return Resource.BERRY;
+		case ROCK:
+			return Resource.STONE;
+		case WALL_WOOD:
+			return Resource.WOOD;
+		case WALL_STONE:
+			return Resource.STONE_BRICK;
+		default:
+			return null;
+		}
+	}
 }
