@@ -15,68 +15,72 @@ import common.Resource;
 import common.Tile;
 
 public class Player{
-	private int hp;
+	private int currentHp;
+	private int maxHp;
 	private Hashtable<Resource,Integer> inventory;
 	private LinkedList<Equipment> eq;
 	private GameMap map;
 	private RequestSender sender;
-	//....
 	
 	public Player(GameMap map, RequestSender sender){
 		this.map = map;
 		this.sender = sender;
 		inventory = new Hashtable<Resource, Integer>();
 		eq = new LinkedList<Equipment>();
-		hp = -1;
+		maxHp = -1;
+		currentHp = -1;
 	}
 	
-	public void act(Tile tile){
-		
-	}
+	public int getMaxHp(){ return maxHp; }
+	public int getCurrentHp(){ return currentHp; }
+	public void setMaxHp(int value){ maxHp = value; }
+	public void setCurrentHp(int value){ currentHp = value; }
 	
-	public void moveOrAct(Tile tile){
-		
-	}
-	
-	public void dropItem(Tile tile,Resource res){
-		
-	}
-	
-	public void Move(Tile tile){
-		if(tile == null){
-			Request req = new Request(RequestType.TILE , tile);
-			sender.sendRequest(req);
-			return;
+	public boolean act(Tile tile){
+		if(move(tile)){
+			return true;
 		}
-		
+		if(harvest(tile)){
+			return true;
+		}
+		return false;
 	}
 	
-	private void PickUp(MapObjectType obj){
-		Request req = new Request();
-		sender.sendRequest(req);
-	}
-	
-	/*
-	public void MapAction(Direction dir){
-		Tile tile = lookInDirection(dir);
-		if(tile == null)
-			return;
-		if(tile.canMoveOn()){
-			if(tile.canPickUp()){
-				//here we need to send pick up action
-				System.out.println("im picking things up");
-				tile.setMapObjectType(null);
+	public boolean move(Tile tile){
+		if(tile != null){
+			if(map.isNearby(tile.getCoordinate())){
+				if(tile.canMoveOn()){
+					Request req = new Request(RequestType.MOVE , tile.getCoordinate());
+					sender.sendRequest(req);
+					return true;
+				}
 			}
-			moveCenter(dir);
-		}
-		else if (tile.canAttack()){
-			//here we need to send attack command
-			System.out.println("dieeeee you monster");
-		}
-		else if (tile.canHarvest()){
-			//here we need to send harvest command
-			System.out.println("im a lousy farmer");
-		}
+		}	
+		return false;
 	}
-	*/
+	
+	public boolean harvest(Tile tile){
+		if(tile != null){
+			if(tile.canAttack()){
+				Request req = new Request(RequestType.ATTACK , tile.getCoordinate());
+				sender.sendRequest(req);
+				return true;
+			}
+			else if (tile.canHarvest()){
+				Request req = new Request(RequestType.HARVEST , tile.getCoordinate());
+				sender.sendRequest(req);
+				return true;
+			}
+		}	
+		return false;
+	}
+	
+	//TODO
+	public void addResource(Resource res){}
+	//TODO
+	public void setInventory(Hashtable<Resource,Integer> inven){ this.inventory = inven;}
+	//TODO
+	public void addEquipment(Equipment eq){}
+	//TODO
+	public void setEquipments(LinkedList<Equipment> eq){ this.eq = eq;}
 }

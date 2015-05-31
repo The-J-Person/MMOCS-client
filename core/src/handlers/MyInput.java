@@ -18,7 +18,7 @@ public class MyInput {
 	static {
 		keys = new boolean[NUM_KEYS];
 		pkeys = new boolean[NUM_KEYS];
-		mouseXY = new int[MOUSE_KEYS];
+		mouseXY = new int[MOUSE_KEYS*2];
 		for(int i = 0 ; i < MOUSE_KEYS*2 ; i++){
 			mouseXY[i] = -1;
 		}

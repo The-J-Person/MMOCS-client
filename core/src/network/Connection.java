@@ -55,7 +55,7 @@ public class Connection {
 		try {
 			receiver = new UpdateReceiver(
 					new ObjectInputStream(skt.getInputStream()),
-					map, player);
+					map, player, sender);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,11 +67,6 @@ public class Connection {
 	}
 	
 	public RequestSender getRequestSender(){ return sender; }
-	public Acknowledgement getAck() {
-		if(!ack.empty())
-			return ack.pop();
-		return null;
-	}
 	
 	
 	

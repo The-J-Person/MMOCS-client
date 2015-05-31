@@ -35,7 +35,12 @@ public class GameMap {
 		}
 		setSprites();
 	}
+	//may delete later
+	public Content getFloorSprites(){return floors;}
+	public Content getObjectSprites(){return objects;}
+	//end of may delete
 	
+	public void setCenter(Coordinate center){ this.center = center;}
 	public Coordinate getCenter() { return center; }
 	
 	public boolean tileInRange(Tile tile){
@@ -62,14 +67,15 @@ public class GameMap {
 			return true;
 		return false;
 	}
-	
-	public boolean isNearby(int x, int y){
+	/* possibly useless
+	private boolean isNearby(int x, int y){
 		if( x == getMiddleX() && y == getMiddleY() )
 			return false;
 		if( Math.abs(x - getMiddleX()) <= 1 && Math.abs(y - getMiddleY()) <= 1)
 			return true;
 		return false;
 	}
+	*/
 	
 	public int rowsNum(){ return map.size(); }
 	public int colsNum(){ return map.getFirst().size();}
@@ -100,7 +106,67 @@ public class GameMap {
 		return null;
 	}
 	
-	public void moveCenter(Direction dir){
+	public boolean isNearby(Coordinate cor){
+		if(center.equals(cor))
+			return false;
+		if(cor.X() - center.X() <= 1 && cor.Y() - center.Y() <= 1 )
+			return true;
+		return false;
+	}
+	
+	//null if its not nearby
+	public Direction getDirection(Coordinate cor){
+		if(isNearby(cor)){
+			int x = (int)(cor.X() - center.X());
+			int y = (int)(cor.Y() - center.Y());
+			
+			if(x == 1 && y == 1) return Direction.NORTH_EAST;
+			if(x == 0 && y == 1) return Direction.NORTH;
+			if(x == -1 && y == 1) return Direction.NORTH_WEST;
+			if(x == 1 && y == 0) return Direction.EAST;
+			if(x == -1 && y == 0) return Direction.WEST;
+			if(x == 1 && y == -1) return Direction.SOUTH_EAST;
+			if(x == 0 && y == -1) return Direction.SOUTH;
+			if(x == -1 && y == -1) return Direction.SOUTH_WEST;
+		}
+		return null;
+	}
+	
+	public void MoveCenter(Direction dir){
+		switch (dir){
+		case WEST:
+			moveCenterStraight(Direction.WEST);
+			break;
+		case EAST:
+			moveCenterStraight(Direction.EAST);
+			break;
+		case NORTH:
+			moveCenterStraight(Direction.NORTH);
+			break;
+		case SOUTH:
+			moveCenterStraight(Direction.SOUTH);
+			break;
+		case NORTH_WEST:
+			moveCenterStraight(Direction.NORTH);
+			moveCenterStraight(Direction.WEST);
+			break;
+		case NORTH_EAST:
+			moveCenterStraight(Direction.NORTH);
+			moveCenterStraight(Direction.EAST);
+			break;
+		case SOUTH_WEST:
+			moveCenterStraight(Direction.SOUTH);
+			moveCenterStraight(Direction.WEST);
+			break;
+		case SOUTH_EAST:
+			moveCenterStraight(Direction.SOUTH);
+			moveCenterStraight(Direction.EAST);
+			break;
+		default: break;
+		}
+	}
+	
+	private void moveCenterStraight(Direction dir){
 		LinkedList<Tile> list;
 		switch(dir){
 		case WEST:
@@ -142,8 +208,8 @@ public class GameMap {
 		for(int i = 0 ; i < rowsNum() ; i++){
 			for(int j = 0 ; i < colsNum() ; j++){
 				if(map.get(i).get(j) == null){
-					int x = j - ((colsNum()-1)/2);
-					int y = i - ((rowsNum()-1)/2);
+					int x = j - getMiddleY();
+					int y = getMiddleX() - i;
 					res.add(new Coordinate(center.X() + x , center.Y() + y));
 				}  
 			}
@@ -183,28 +249,6 @@ public class GameMap {
 		sb.end();
 	}
 	
-	public void MapAction(Direction dir){
-		Tile tile = lookInDirection(dir);
-		if(tile == null)
-			return;
-		if(tile.canMoveOn()){
-			if(tile.canPickUp()){
-				//here we need to send pick up action
-				System.out.println("im picking things up");
-				tile.setMapObjectType(null);
-			}
-			moveCenter(dir);
-		}
-		else if (tile.canAttack()){
-			//here we need to send attack command
-			System.out.println("dieeeee you monster");
-		}
-		else if (tile.canHarvest()){
-			//here we need to send harvest command
-			System.out.println("im a lousy farmer");
-		}
-	}
-	
 	public Tile getTile(int x, int y){
 		return map.get(y).get(x);
 	}
@@ -228,7 +272,6 @@ public class GameMap {
 		floors.loadTexture("Stone_brick_floor.png",FloorType.STONE_BRICK.name());
 		
 		objects.loadTexture("player.png",MapObjectType.PLAYER.name()); 
-		objects.loadTexture("pile.png",MapObjectType.PILE.name());
 		objects.loadTexture("monster.png",MapObjectType.MONSTER.name());
 		objects.loadTexture("tree.png",MapObjectType.TREE.name());
 		objects.loadTexture("Bush.png",MapObjectType.BUSH.name());

@@ -39,7 +39,7 @@ public class MMOCSClient extends ApplicationAdapter {
 		sprites = new Content();
 		sprites.loadTexture("blue.jpg", "blue");
 		
-		Gdx.input.setInputProcessor(new MyInputProcessor());
+		//Gdx.input.setInputProcessor(new MyInputProcessor());
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, WIDTH , HEIGHT);
@@ -51,6 +51,7 @@ public class MMOCSClient extends ApplicationAdapter {
 	@Override
 	public void render () {
 		accum += Gdx.graphics.getDeltaTime();
+		
 		while(accum >= STEP){
 			accum -= STEP;
 			gsm.update(STEP);
