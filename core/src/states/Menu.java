@@ -176,30 +176,19 @@ public class Menu extends GameState {
 		}
 		else {
 			System.out.println("failed to connect - need to add error message");
-//			ErrorMessage dialog;
-//			BitmapFont font = new BitmapFont();
-//			Skin skin = new Skin();
-//			skin.addRegions(textAtlas);
-//			WindowStyle windowStyle = new WindowStyle();
-//			windowStyle.titleFont = font;
-//			windowStyle.background = skin.getDrawable("White");
-//			
-//			TextButtonStyle textButtonStyle = new TextButtonStyle(); 
-//	        textButtonStyle.font = font;
-//	        textButtonStyle.up = skin.getDrawable("Button-up");
-//	        textButtonStyle.down = skin.getDrawable("Button-down");
-//	        
-//	        LabelStyle labelStyle = new LabelStyle();
-//			labelStyle.font = font;
-//			labelStyle.fontColor = Color.WHITE;	
-//			
-//			dialog = new ErrorMessage("Error", windowStyle);
-//			dialog.setSize(300, 300);
-//			dialog.text(new Label("Connection timeout", labelStyle));
-//			TextButton button = new TextButton("ok", textButtonStyle);
-//			button.scaleBy(0.2f);
-//			dialog.button(button);
-//			dialog.show(stage);
+			Dialog dialog;
+			Skin skin = new Skin(Gdx.files.internal("uiskin.json"));	
+			dialog = new Dialog("Error", skin){
+				{
+				text("Failed to connect to the server");
+				button("ok");
+				}
+				
+				protected void result(Object obj){
+					remove();
+				}
+			};;
+			dialog.show(stage);
 			
 		} 
 	}

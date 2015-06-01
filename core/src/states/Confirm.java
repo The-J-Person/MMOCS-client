@@ -28,7 +28,6 @@ public class Confirm extends GameState {
 	
 	private Stage stage;
 	private TextField userNameField;
-	private TextField passField;
 	private TextField codeField;
 	private TextureAtlas textAtlas;
 	private Connection con;
@@ -97,19 +96,9 @@ public class Confirm extends GameState {
         userNameField.setMaxLength(20);
         table.add(userNameField).height(30).width(250).space(10).align(Align.left);  
         
-        //password label and field
-        table.row();
-        label = new Label("Password:", labelStyle);
-        table.add(label).space(10).uniform();
-        passField = new TextField("", textFieldStyle);
-        passField.setPasswordMode(true);
-        passField.setPasswordCharacter('*');
-        passField.setMaxLength(20);
-        table.add(passField).height(30).width(250).space(10).align(Align.left);
-        
         //code label and field
         table.row();
-        label = new Label("code:", labelStyle);
+        label = new Label("Code:", labelStyle);
 		table.add(label).space(10).uniform();
         codeField = new TextField("", textFieldStyle);
         codeField.setMaxLength(50);
@@ -126,7 +115,7 @@ public class Confirm extends GameState {
         });
         table.add(button).height(80).space(10).width(200).align(Align.right);
         
-        //back button
+        //back button 
         button = new TextButton("Back", textButtonStyle);
         button.addListener(new ClickListener() {
             
@@ -146,10 +135,9 @@ public class Confirm extends GameState {
 	private void confirm(){
 		if(con.connect()){
 			//may need to encrypt the password
-			String[] args = new String[3];
+			String[] args = new String[2];
 			args[0] = userNameField.getText();
-			args[1] = passField.getText();
-			args[2] = codeField.getText();
+			args[1] = codeField.getText();
 			con.setReceiver(gsm.getGame());
 			con.startReceiver();
 			con.getRequestSender().sendRequest(new Request(RequestType.CONFIRM, args));
