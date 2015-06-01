@@ -1,0 +1,33 @@
+
+Initial.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Background
+  rotate: false
+  xy: 1, 165
+  size: 880, 640
+  orig: 880, 640
+  offset: 0, 0
+  index: -1
+Button-up
+  rotate: false
+  xy: 1, 83
+  size: 120, 80
+  orig: 120, 80
+  offset: 0, 0
+  index: -1
+Button-down
+  rotate: false
+  xy: 883, 725
+  size: 120, 80
+  orig: 120, 80
+  offset: 0, 0
+  index: -1
+White
+  rotate: false
+  xy: 1, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1

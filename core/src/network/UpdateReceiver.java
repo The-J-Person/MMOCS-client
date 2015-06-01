@@ -1,10 +1,13 @@
 package network;
 
 import handlers.GameMap;
+import handlers.GameStateManager;
 
 import java.io.ObjectInputStream;
 import java.util.Hashtable;
 import java.util.LinkedList;
+
+import MMOCS.game.MMOCSClient;
 
 import common.Acknowledgement;
 import common.Coordinate;
@@ -22,13 +25,15 @@ public class UpdateReceiver extends Thread {
 	private ObjectInputStream stream;
 	private GameMap map;
 	private Player player;
+	private GameStateManager gsm;
 	private RequestSender sender;
 	
-	public UpdateReceiver(ObjectInputStream stream, GameMap map , Player player , RequestSender sender){
+	public UpdateReceiver(ObjectInputStream stream, MMOCSClient game , RequestSender sender){
 		this.stream = stream;
-		this.map = map;
-		this.player = player;
+		this.map = game.getMap();
+		this.player = game.getPlayer();
 		this.sender = sender;
+		this.gsm = game.getGSM();
 		stop = false;
 	}
 	
@@ -64,6 +69,9 @@ public class UpdateReceiver extends Thread {
 				case COORDINATE: 
 					//right only one coordinate is meant to initialize the center of the map
 					map.setCenter((Coordinate)up.getData());
+					for(Coordinate cor : map.missingTiles()){
+						sender.sendRequest(new Request(RequestType.TILE , cor));
+					}
 					break;
 				default: break;
 				
@@ -71,6 +79,7 @@ public class UpdateReceiver extends Thread {
 			}
 			catch(Exception e){
 				System.out.println(e.getMessage());
+				break;
 			}
 		}
 	}
@@ -80,6 +89,7 @@ public class UpdateReceiver extends Thread {
 		switch(ack.getRequestType()){
 		case MOVE:
 			//send request for previous and current tiles, also maybe cooldown on move
+			map.getTile(map.getMiddleX(), map.getMiddleY()).setMapObjectType(null);
 			sender.sendRequest(new Request(RequestType.TILE , map.getCenter()));
 			sender.sendRequest(new Request(RequestType.TILE , req.getData()));
 			map.MoveCenter(map.getDirection((Coordinate)req.getData()));
@@ -94,7 +104,7 @@ public class UpdateReceiver extends Thread {
 			//maybe visuals for attacks, also maybe cooldown on attack
 			break;
 		case LOG_IN:
-			//allow entering the Play state
+			gsm.pushState(GameStateManager.PLAY);
 			break;
 		case CONFIRM:
 			//display success message or failure

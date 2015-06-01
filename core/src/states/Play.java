@@ -45,15 +45,13 @@ public class Play extends GameState {
 		font = new BitmapFont();
 		Gdx.input.setInputProcessor(stage);
 		selectedRes = null;
-		map = new GameMap(gsm.getGame().getSpriteBatch(),new Coordinate(0,0), MMOCSClient.WIDTH, MMOCSClient.HEIGHT);
-		con = new Connection();
-		if(!con.Connect()){
-			//display pop up window for the error
-		}
-		player = new Player(map,con.getRequestSender());
-		//con.StartReceiver(map, player);
+		map = gsm.getGame().getMap();
+		con = gsm.getGame().getCon();
+		player = gsm.getGame().getPlayer();
 		
 		//testing area
+		map = new GameMap(batch, null , 440, 320);
+		map.setCenter(new Coordinate(0,0));
 		map.update(new Tile(2,0,FloorType.STONE_BRICK, MapObjectType.MONSTER));
 		map.update(new Tile(-3,-3,FloorType.STONE_BRICK, MapObjectType.MONSTER));
 		map.update(new Tile(1,0,FloorType.STONE_BRICK, null));
@@ -119,16 +117,15 @@ public class Play extends GameState {
 
 	@Override
 	public void update(float dt) {
-		
-		handleInput();
-
+		if(map.isInitialized() && player.isInitialized())
+			handleInput();
 	}
 
 	@Override
 	public void render() {
 		Gdx.gl30.glClear(GL30.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(map.getFloorSprites().getTexture("WOOD"),0, 0,440,80);
+		batch.draw(map.getFloorSprites().getTexture("STONE_BRICK"),0, 0,440,80);
 		batch.end();
 		map.drawMap();
 		drawHealthBar();
@@ -173,11 +170,7 @@ public class Play extends GameState {
             
         });
         table.add(button).height(80).width(120).space(10);
-        
-        //test area
-        
-        //end of test
-        
+
         //equipments inventory button
         button = new TextButton("Equipment", textButtonStyle);
         button.addListener(new ClickListener() {
@@ -225,7 +218,10 @@ public class Play extends GameState {
 	}
 	
 	private int getPercentHpBar(int full){
-		return (int)(full * player.getCurrentHp()/((float)player.getMaxHp()));
+		int x = 1;
+		if (player.isInitialized())
+			x = (int)(full * player.getCurrentHp()/((float)player.getMaxHp())); 
+		return x;
 	}
 	private void logOut(){ System.out.println("logging out"); }
 	private void openInventory(){ System.out.println("opening inventory"); }

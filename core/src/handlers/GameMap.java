@@ -20,6 +20,7 @@ public class GameMap {
 	/*
 	 * draws the map in the area in jumps of 40x40 
 	 * */
+	
 	public GameMap(SpriteBatch sb, Coordinate center ,int width, int height){
 		this.sb = sb;
 		this.center = center;
@@ -34,6 +35,10 @@ public class GameMap {
 			map.add(list);
 		}
 		setSprites();
+	}
+	
+	public boolean isInitialized(){
+		return center != null;
 	}
 	//may delete later
 	public Content getFloorSprites(){return floors;}
@@ -218,6 +223,9 @@ public class GameMap {
 	}
 	
 	public void drawMap(){
+		if(!isInitialized())
+			return;
+		
 		Iterator <Tile> w_iter;
 		Iterator<LinkedList<Tile>> h_iter = map.iterator();
 		if(h_iter.hasNext())
@@ -242,9 +250,8 @@ public class GameMap {
 				}
 			}
 		}
-		//before network is here
+		//player will always be drawn in the middle, to avoid a player disappearing when update is slow
 		sb.begin();
-		sb.draw(floors.getTexture(FloorType.WOOD.name()), ((width-1)/2)*40, 40*(height-((height-1)/2)));
 		sb.draw(objects.getTexture(MapObjectType.PLAYER.name()), ((width-1)/2)*40, 40*(height-((height-1)/2)));
 		sb.end();
 	}

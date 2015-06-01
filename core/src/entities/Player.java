@@ -7,8 +7,8 @@ import java.util.LinkedList;
 
 import network.RequestSender;
 
+import common.Coordinate;
 import common.Equipment;
-import common.MapObjectType;
 import common.Request;
 import common.RequestType;
 import common.Resource;
@@ -22,7 +22,11 @@ public class Player{
 	private GameMap map;
 	private RequestSender sender;
 	
-	public Player(GameMap map, RequestSender sender){
+	public Player(GameMap map){
+		this(null ,map);
+	}
+	
+	public Player(RequestSender sender, GameMap map){
 		this.map = map;
 		this.sender = sender;
 		inventory = new Hashtable<Resource, Integer>();
@@ -31,6 +35,12 @@ public class Player{
 		currentHp = -1;
 	}
 	
+	public boolean isInitialized(){
+		return maxHp != -1 && currentHp != -1 ;
+	}
+	
+	public void setMap(GameMap map){ this.map = map;}
+	public void setRequestSender(RequestSender sender){ this.sender = sender;}
 	public int getMaxHp(){ return maxHp; }
 	public int getCurrentHp(){ return currentHp; }
 	public void setMaxHp(int value){ maxHp = value; }

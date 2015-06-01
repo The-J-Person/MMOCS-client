@@ -1,35 +1,40 @@
 package network;
 
-import handlers.GameMap;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Stack;
 
-import common.Acknowledgement;
-
-import entities.Player;
+import MMOCS.game.MMOCSClient;
 
 public class Connection {
 
 	private Socket skt;
 	private RequestSender sender;
 	private UpdateReceiver receiver;
-	private Stack<Acknowledgement> ack;
+	private String address;
+	private int port;
 	
 	public Connection(){
 		skt = new Socket();
 		sender = null;
 		receiver = null;
-		ack = new Stack<Acknowledgement>();
+		address = null;
+		port = 0;
 	}
 	
-	public boolean Connect(){
+	public void setAddress(String add, int port){
+		this.address = add;
+		this.port = port;
+	}
+	
+	public boolean connect(){
+		if (address.equals("")){
+			address = "unknown";
+		}
 		try{
-			skt.connect(new InetSocketAddress("77.125.250.34", 9098), 1000);
+			skt.connect(new InetSocketAddress(address, port), 1000);
 			sender = new RequestSender(new ObjectOutputStream(skt.getOutputStream()));
 			return true;
 		}
@@ -42,28 +47,39 @@ public class Connection {
 		return skt.isConnected();
 	}
 	
-	public void Close(){
+	public void close(){
 		if(isConnected())
 			try {
 				skt.close();
-			} catch (IOException e) {
+				stopReceiver();
+				receiver = null;
+				sender = null;
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 	}
 	
-	public void StartReceiver(GameMap map, Player player){
-		try {
-			receiver = new UpdateReceiver(
-					new ObjectInputStream(skt.getInputStream()),
-					map, player, sender);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void startReceiver(){
+		if(receiver != null){
+			receiver.start();
 		}
 	}
 	
-	public void StopReceiver(){
-		receiver.setStop(true);
+	public boolean setReceiver(MMOCSClient game){
+		try {
+			receiver = new UpdateReceiver(
+					new ObjectInputStream(skt.getInputStream()),
+					game, sender);
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public void stopReceiver(){
+		UpdateReceiver.setStop(true);
 	}
 	
 	public RequestSender getRequestSender(){ return sender; }
