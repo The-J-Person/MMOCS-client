@@ -8,6 +8,7 @@ import network.Connection;
 import MMOCS.game.MMOCSClient;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -227,4 +228,8 @@ public class Play extends GameState {
 	private void openInventory(){ System.out.println("opening inventory"); }
 	private void craft(){ System.out.println("weeee crafting"); }
 	private void openEquipments(){ System.out.println("as if i have equipment..."); }
+	
+	public InputProcessor getInputProcessor(){
+		return stage;
+	}
 }

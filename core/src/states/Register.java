@@ -3,6 +3,7 @@ package states;
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -18,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import common.Request;
+import common.RequestType;
 
 import handlers.GameStateManager;
 
@@ -140,7 +143,30 @@ public class Register extends GameState {
         stage.addActor(table);
 	}
 	
-	private void register(){}
-	private void goBack(){}
+	private void register(){
+		if(con.connect()){
+			//may need to encrypt the password
+			String[] args = new String[3];
+			args[0] = userNameField.getText();
+			args[1] = passField.getText();
+			args[2] = emailField.getText();
+			con.setReceiver(gsm.getGame());
+			con.startReceiver();
+			con.getRequestSender().sendRequest(new Request(RequestType.REGISTER, args));
+			//waiting window is required 
+		}
+		else {
+			System.out.println("Connection failed");
+		}
+		
+		
+	}
+	private void goBack(){
+		gsm.popState();
+	}
+	
+	public InputProcessor getInputProcessor(){
+		return stage;
+	}
 
 }

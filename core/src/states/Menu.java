@@ -5,6 +5,7 @@ import handlers.GameStateManager;
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -212,4 +213,7 @@ public class Menu extends GameState {
 		Gdx.app.exit();
 	}
 
+	public InputProcessor getInputProcessor(){
+		return stage;
+	}
 }

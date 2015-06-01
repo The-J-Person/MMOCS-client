@@ -110,7 +110,12 @@ public class UpdateReceiver extends Thread {
 			//display success message or failure
 			break;
 		case REGISTER:
-			//display success message or failure
+			if(ack.getAck()){
+				System.out.println("you registered successfully");
+			}
+			else{
+				System.out.println("you sent it good and got 'no' answer ");
+			}
 			break;
 		case CRAFT:
 			break;

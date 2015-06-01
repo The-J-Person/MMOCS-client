@@ -2,6 +2,8 @@ package handlers;
 
 import java.util.Stack;
 
+import com.badlogic.gdx.Gdx;
+
 import states.GameState;
 import states.Initial;
 import states.Menu;
@@ -21,7 +23,7 @@ public class GameStateManager {
 	public GameStateManager(MMOCSClient game){
 		this.game = game;
 		gameStates = new Stack<GameState>();
-		pushState(REGISTER);		
+		pushState(INITIAL);		
 	}
 	
 	public MMOCSClient getGame(){ return game;}
@@ -56,5 +58,7 @@ public class GameStateManager {
 	public void popState(){
 		GameState st = gameStates.pop();
 		st.dispose();
+		if(!gameStates.empty())
+			Gdx.input.setInputProcessor(gameStates.peek().getInputProcessor());
 	}
 }

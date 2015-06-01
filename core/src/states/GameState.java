@@ -3,6 +3,9 @@ package states;
 import handlers.GameStateManager;
 import MMOCS.game.MMOCSClient;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -25,5 +28,5 @@ public abstract class GameState {
 	public abstract void update(float dt);
 	public abstract void render();
 	public abstract void dispose();
-	
+	public abstract InputProcessor getInputProcessor();
 }
