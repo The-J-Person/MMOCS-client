@@ -69,7 +69,7 @@ public class Connection {
 		try {
 			receiver = new UpdateReceiver(
 					new ObjectInputStream(skt.getInputStream()),
-					game, sender);
+					game, this);
 			return true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

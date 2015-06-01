@@ -61,7 +61,7 @@ public class Register extends GameState {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		textAtlas.dispose();
 
 	}
 	
@@ -107,7 +107,7 @@ public class Register extends GameState {
         passField.setMaxLength(20);
         table.add(passField).height(30).width(250).space(10).align(Align.left);
         
-      //username label and field
+      //code label and field
         table.row();
         label = new Label("E-mail:", labelStyle);
 		table.add(label).space(10).uniform();

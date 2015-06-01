@@ -27,12 +27,14 @@ public class UpdateReceiver extends Thread {
 	private Player player;
 	private GameStateManager gsm;
 	private RequestSender sender;
+	private Connection con;
 	
-	public UpdateReceiver(ObjectInputStream stream, MMOCSClient game , RequestSender sender){
+	public UpdateReceiver(ObjectInputStream stream, MMOCSClient game , Connection con){
+		this.con = con;
 		this.stream = stream;
 		this.map = game.getMap();
 		this.player = game.getPlayer();
-		this.sender = sender;
+		this.sender = con.getRequestSender();
 		this.gsm = game.getGSM();
 		stop = false;
 	}
@@ -107,7 +109,13 @@ public class UpdateReceiver extends Thread {
 			gsm.pushState(GameStateManager.PLAY);
 			break;
 		case CONFIRM:
-			//display success message or failure
+			if(ack.getAck()){
+				System.out.println("you confirmed successfully");
+			}
+			else{
+				System.out.println("you sent it good and got 'no' answer ");
+			}
+			con.close();
 			break;
 		case REGISTER:
 			if(ack.getAck()){
@@ -116,6 +124,7 @@ public class UpdateReceiver extends Thread {
 			else{
 				System.out.println("you sent it good and got 'no' answer ");
 			}
+			con.close();
 			break;
 		case CRAFT:
 			break;

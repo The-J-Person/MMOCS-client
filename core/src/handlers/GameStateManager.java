@@ -2,14 +2,15 @@ package handlers;
 
 import java.util.Stack;
 
-import com.badlogic.gdx.Gdx;
-
+import states.Confirm;
 import states.GameState;
 import states.Initial;
 import states.Menu;
 import states.Play;
 import states.Register;
 import MMOCS.game.MMOCSClient;
+
+import com.badlogic.gdx.Gdx;
 
 public class GameStateManager {
 	
@@ -19,6 +20,7 @@ public class GameStateManager {
 	public static final int PLAY = 1210422;
 	public static final int INITIAL = 23112;
 	public static final int REGISTER = 56577;
+	public static final int CONFIRM = 432232;
 	
 	public GameStateManager(MMOCSClient game){
 		this.game = game;
@@ -42,6 +44,7 @@ public class GameStateManager {
 		case INITIAL: return new Initial(this);
 		case MENU: return new Menu(this);
 		case REGISTER: return new Register(this);
+		case CONFIRM: return new Confirm(this);
 		default: break;
 		}
 		return null;
