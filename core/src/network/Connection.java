@@ -82,6 +82,18 @@ public class Connection {
 			return sender.sendRequest(req);
 		return false;
 	}
+	public boolean isProcessing(){
+		if(sender != null)
+			return sender.isProcessing();
+		return false;
+	}
+	public boolean setProcessing(boolean state){
+		if(sender != null){
+			sender.setProcessing(state);
+		}
+		return false;
+	}
+	
 	public LinkedList<Update> getUpdates() { return updates; }
 	
 	

@@ -49,6 +49,7 @@ public class UpdateReceiver extends Thread {
 		while(!stop){
 			try{
 				up = (Update)stream.readObject();
+				Thread.sleep(5000); // ONLY MEANT FOR TESTING MENUS!!!
 				synchronized(updates){
 					updates.addLast(up);
 				}

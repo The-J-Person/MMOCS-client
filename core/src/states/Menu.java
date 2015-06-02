@@ -201,8 +201,7 @@ public class Menu extends GameState {
 	}
 	
 	private void exitGame(){
-		if(con.isConnected())
-			con.close();
+		con.close();
 		Gdx.app.exit();
 	}
 

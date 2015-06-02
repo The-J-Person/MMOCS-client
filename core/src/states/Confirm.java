@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -56,6 +57,14 @@ public class Confirm extends GameState {
 
 	@Override
 	public void update(float dt) {
+		if(con.isProcessing() == true){
+			stage.getActors().get(1).setVisible(true);
+			stage.getActors().get(0).setTouchable(Touchable.disabled);
+		}
+		else{
+			stage.getActors().get(1).setVisible(false);
+			stage.getActors().get(0).setTouchable(Touchable.enabled);
+		}
 		handleUpdates();
 
 	}
@@ -132,11 +141,22 @@ public class Confirm extends GameState {
         	}
             
         });
-        table.add(button).width(120).height(80).space(10).width(200).align(Align.right);
+        table.add(button).width(120).height(80).space(10).width(200).align(Align.right);  
         
-        table.setFillParent(true);
-        
+		table.setFillParent(true);
         table.setBackground(skin.getDrawable("Background"));
+        stage.addActor(table);
+        
+        table = new Table();
+        labelStyle = new LabelStyle();
+        
+        labelStyle.font = font;
+		labelStyle.fontColor = Color.BLACK;
+		labelStyle.background = skin.getDrawable("White");   
+        label = new Label("Waiting for server...", labelStyle); 
+        table.add(label);
+        table.bottom().left();
+        table.setVisible(false);
         stage.addActor(table);
 	}
 	
@@ -146,7 +166,7 @@ public class Confirm extends GameState {
 			String[] args = new String[2];
 			args[0] = userNameField.getText();
 			args[1] = codeField.getText();
-			con.getRequestSender().sendRequest(new Request(RequestType.CONFIRM, args));
+			con.sendRequest(new Request(RequestType.CONFIRM, args));
 			//waiting window is required 
 		}
 		else {
