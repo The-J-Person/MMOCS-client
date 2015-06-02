@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -144,7 +145,19 @@ public class Confirm extends GameState {
 			//waiting window is required 
 		}
 		else {
-			System.out.println("Connection failed");
+			Dialog dialog;
+			Skin skin = new Skin(Gdx.files.internal("uiskin.json"));	
+			dialog = new Dialog("Error", skin){
+				{
+				text("Failed to connect to the server");
+				button("ok");
+				}
+				
+				protected void result(Object obj){
+					remove();
+				}
+			};;
+			dialog.show(stage);
 		}
 		
 		

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -33,6 +34,8 @@ public class Menu extends GameState {
 	private TextField passField;
 	private TextureAtlas textAtlas;
 	private Connection con;
+	private Dialog waitingDialog;
+	private Label waitLabel;
 	
 	public Menu(GameStateManager gsm){
 		super(gsm);
@@ -49,7 +52,14 @@ public class Menu extends GameState {
 
 	@Override
 	public void update(float dt) {
-		// TODO Auto-generated method stub
+		if(con.getRequestSender()!= null && con.getRequestSender().isProcessing()){
+			if(waitLabel.getText().length <= waitLabel.getText().length - -3){
+				waitLabel.setText(waitLabel.getText() + ".");
+			}
+			else {
+				waitLabel.setText("Waiting.");
+			}
+		}
 
 	}
 
@@ -161,10 +171,13 @@ public class Menu extends GameState {
         table.setFillParent(true);
         
         table.setBackground(skin.getDrawable("Background"));
-        stage.addActor(table);
+        stage.addActor(table);	
 	}
 	
 	private void logIn(){
+		if(isWaiting())
+			return;
+		final Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		if(con.connect()){
 			//may need to encrypt the password
 			String[] args = new String[2];
@@ -173,11 +186,17 @@ public class Menu extends GameState {
 			con.setReceiver(gsm.getGame());
 			con.startReceiver();
 			con.getRequestSender().sendRequest(new Request(RequestType.LOG_IN, args));
+			waitingDialog = new Dialog("Waiting for the server to respond", skin){
+				{
+				waitLabel = new Label("Waiting.",skin);
+				text(waitLabel);
+				}
+			};;
+			waitingDialog.show(stage);
+			
 		}
 		else {
-			System.out.println("failed to connect - need to add error message");
-			Dialog dialog;
-			Skin skin = new Skin(Gdx.files.internal("uiskin.json"));	
+			Dialog dialog;	
 			dialog = new Dialog("Error", skin){
 				{
 				text("Failed to connect to the server");
@@ -194,17 +213,29 @@ public class Menu extends GameState {
 	}
 	
 	private void register(){
+		if(isWaiting())
+			return;
 		gsm.pushState(GameStateManager.REGISTER);
 	}
 	private void confirm(){
+		if(isWaiting())
+			return;
 		gsm.pushState(GameStateManager.CONFIRM);
 	}
 	
 	private void exitGame(){
+		if(con.isConnected())
+			con.close();
 		Gdx.app.exit();
 	}
 
 	public InputProcessor getInputProcessor(){
 		return stage;
+	}
+	
+	private boolean isWaiting(){
+		if(con.getRequestSender() != null && con.getRequestSender().isProcessing())
+			return true;
+		return false;
 	}
 }

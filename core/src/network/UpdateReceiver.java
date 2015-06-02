@@ -50,7 +50,7 @@ public class UpdateReceiver extends Thread {
 				case TILE: 
 					map.update((Tile)up.getData());
 					break;
-				case ACKNOWLEDGEMENT:
+				case ACKNOWLEDGMENT:
 					handleAck((Acknowledgement)up.getData());
 					break;
 				case HIT_POINTS: 
