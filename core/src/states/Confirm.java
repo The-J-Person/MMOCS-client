@@ -1,5 +1,7 @@
 package states;
 
+import java.util.LinkedList;
+
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
@@ -20,10 +22,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import common.Acknowledgement;
 import common.Request;
 import common.RequestType;
+import common.Update;
+import common.UpdateType;
 
 import handlers.GameStateManager;
+import handlers.MyDialog;
 
 public class Confirm extends GameState {
 	
@@ -49,7 +56,7 @@ public class Confirm extends GameState {
 
 	@Override
 	public void update(float dt) {
-		// TODO Auto-generated method stub
+		handleUpdates();
 
 	}
 
@@ -139,25 +146,12 @@ public class Confirm extends GameState {
 			String[] args = new String[2];
 			args[0] = userNameField.getText();
 			args[1] = codeField.getText();
-			con.setReceiver(gsm.getGame());
-			con.startReceiver();
 			con.getRequestSender().sendRequest(new Request(RequestType.CONFIRM, args));
 			//waiting window is required 
 		}
 		else {
-			Dialog dialog;
-			Skin skin = new Skin(Gdx.files.internal("uiskin.json"));	
-			dialog = new Dialog("Error", skin){
-				{
-				text("Failed to connect to the server");
-				button("ok");
-				}
-				
-				protected void result(Object obj){
-					remove();
-				}
-			};;
-			dialog.show(stage);
+			MyDialog dia = new MyDialog("Error", "Couldn't connect to the server"); 
+			dia.show(stage);
 		}
 		
 		
@@ -166,8 +160,36 @@ public class Confirm extends GameState {
 		gsm.popState();
 	}
 	
-	public InputProcessor getInputProcessor(){
+	public Stage getInputProcessor(){
 		return stage;
+	}
+	
+	private void handleUpdates(){
+		Update up;
+		LinkedList<Update> updates = con.getUpdates();
+		synchronized(updates){
+			if(!updates.isEmpty())
+				up = updates.getFirst();
+			else return;
+		}
+		if(up.getType() == UpdateType.ACKNOWLEDGMENT){
+			Acknowledgement ack = (Acknowledgement)up.getData();
+			if(ack.getRequestType() == RequestType.CONFIRM){
+				if(ack.getAck()){
+					MyDialog dia = new MyDialog("Success" , "You confirmed your account, head to the game!!!");
+					dia.show(stage);
+				}
+				else{
+					MyDialog dia = new MyDialog("Failure" , "Please check the code you entered is correct");
+					dia.show(stage);
+				}
+				con.close();
+				synchronized(updates){
+					updates.clear();
+				}
+			}
+			
+		}
 	}
 
 }

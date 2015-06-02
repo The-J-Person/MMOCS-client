@@ -229,7 +229,7 @@ public class Play extends GameState {
 	private void craft(){ System.out.println("weeee crafting"); }
 	private void openEquipments(){ System.out.println("as if i have equipment..."); }
 	
-	public InputProcessor getInputProcessor(){
+	public Stage getInputProcessor(){
 		return stage;
 	}
 }

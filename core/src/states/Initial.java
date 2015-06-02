@@ -109,11 +109,11 @@ public class Initial extends GameState {
 	}
 	
 	private void enterGame(){
-		gsm.getGame().getCon().setAddress(field.getText(), 8080);
+		gsm.getGame().getCon().setAddress(field.getText(), 15001);
 		gsm.setState(GameStateManager.MENU);
 	}
 
-	public InputProcessor getInputProcessor(){
+	public Stage getInputProcessor(){
 		return stage;
 	}
 }

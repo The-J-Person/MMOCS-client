@@ -1,29 +1,33 @@
 package states;
 
+import handlers.GameStateManager;
+import handlers.MyDialog;
+
+import java.util.LinkedList;
+
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import common.Acknowledgement;
 import common.Request;
 import common.RequestType;
-
-import handlers.GameStateManager;
+import common.Update;
+import common.UpdateType;
 
 public class Register extends GameState {
 	
@@ -50,7 +54,7 @@ public class Register extends GameState {
 
 	@Override
 	public void update(float dt) {
-		// TODO Auto-generated method stub
+		handleUpdates();
 
 	}
 
@@ -146,30 +150,18 @@ public class Register extends GameState {
 	
 	private void register(){
 		if(con.connect()){
+			System.out.println("i connected...");
 			//may need to encrypt the password
 			String[] args = new String[3];
 			args[0] = userNameField.getText();
 			args[1] = passField.getText();
 			args[2] = emailField.getText();
-			con.setReceiver(gsm.getGame());
-			con.startReceiver();
 			con.getRequestSender().sendRequest(new Request(RequestType.REGISTER, args));
 			//waiting window is required 
 		}
 		else {
-			Dialog dialog;
-			Skin skin = new Skin(Gdx.files.internal("uiskin.json"));	
-			dialog = new Dialog("Error", skin){
-				{
-				text("Failed to connect to the server");
-				button("ok");
-				}
-				
-				protected void result(Object obj){
-					remove();
-				}
-			};;
-			dialog.show(stage);
+			MyDialog dia = new MyDialog("Error", "Couldn't connect to the server"); 
+			dia.show(stage);
 		}
 		
 		
@@ -178,8 +170,36 @@ public class Register extends GameState {
 		gsm.popState();
 	}
 	
-	public InputProcessor getInputProcessor(){
+	public Stage getInputProcessor(){
 		return stage;
+	}
+	
+	private void handleUpdates(){
+		Update up;
+		LinkedList<Update> updates = con.getUpdates();
+		synchronized(updates){
+			if(!updates.isEmpty())
+				up = updates.pop();
+			else return;
+		}
+		if(up.getType() == UpdateType.ACKNOWLEDGMENT){
+			Acknowledgement ack = (Acknowledgement)up.getData();
+			if(ack.getRequestType() == RequestType.REGISTER){
+				if(ack.getAck()){
+					MyDialog dia = new MyDialog("Success" , "You registered sucessfully please check your E-mail to confirm your account");
+					dia.show(stage);
+				}
+				else{
+					MyDialog dia = new MyDialog("Failure" , "Failed to register, please check the details you entered");
+					dia.show(stage);	
+				}
+				con.getRequestSender().setProcessing(false);
+				con.close();
+				synchronized(updates){
+					updates.clear();
+				}
+			}
+		}
 	}
 
 }

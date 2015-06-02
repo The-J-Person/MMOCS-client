@@ -64,4 +64,8 @@ public class GameStateManager {
 		if(!gameStates.empty())
 			Gdx.input.setInputProcessor(gameStates.peek().getInputProcessor());
 	}
+	
+	public GameState peek(){
+		return gameStates.peek();
+	}
 }

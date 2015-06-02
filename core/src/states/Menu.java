@@ -1,7 +1,7 @@
 package states;
 
-import handlers.ErrorMessage;
 import handlers.GameStateManager;
+import handlers.MyDialog;
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
@@ -12,8 +12,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -22,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import common.Request;
 import common.RequestType;
@@ -34,7 +32,7 @@ public class Menu extends GameState {
 	private TextField passField;
 	private TextureAtlas textAtlas;
 	private Connection con;
-	private Dialog waitingDialog;
+	private Window waitingDialog;
 	private Label waitLabel;
 	
 	public Menu(GameStateManager gsm){
@@ -52,14 +50,14 @@ public class Menu extends GameState {
 
 	@Override
 	public void update(float dt) {
-		if(con.getRequestSender()!= null && con.getRequestSender().isProcessing()){
-			if(waitLabel.getText().length <= waitLabel.getText().length - -3){
-				waitLabel.setText(waitLabel.getText() + ".");
-			}
-			else {
-				waitLabel.setText("Waiting.");
-			}
-		}
+//		if(con.getRequestSender()!= null && con.getRequestSender().isProcessing()){
+//			if(waitLabel.getText().length <= waitLabel.getText().length - -3){
+//				waitLabel.setText(waitLabel.getText() + ".");
+//			}
+//			else {
+//				waitLabel.setText("Waiting.");
+//			}
+//		}
 
 	}
 
@@ -177,38 +175,17 @@ public class Menu extends GameState {
 	private void logIn(){
 		if(isWaiting())
 			return;
-		final Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		if(con.connect()){
 			//may need to encrypt the password
 			String[] args = new String[2];
 			args[0] =  userNameField.getText();
 			args[1] = passField.getText();
-			con.setReceiver(gsm.getGame());
-			con.startReceiver();
 			con.getRequestSender().sendRequest(new Request(RequestType.LOG_IN, args));
-			waitingDialog = new Dialog("Waiting for the server to respond", skin){
-				{
-				waitLabel = new Label("Waiting.",skin);
-				text(waitLabel);
-				}
-			};;
-			waitingDialog.show(stage);
 			
 		}
 		else {
-			Dialog dialog;	
-			dialog = new Dialog("Error", skin){
-				{
-				text("Failed to connect to the server");
-				button("ok");
-				}
-				
-				protected void result(Object obj){
-					remove();
-				}
-			};;
-			dialog.show(stage);
-			
+			MyDialog dia = new MyDialog("Error","Couldn't connect to the server.");
+			dia.show(stage);		
 		} 
 	}
 	
@@ -229,7 +206,7 @@ public class Menu extends GameState {
 		Gdx.app.exit();
 	}
 
-	public InputProcessor getInputProcessor(){
+	public Stage getInputProcessor(){
 		return stage;
 	}
 	
