@@ -21,6 +21,7 @@ public class Player{
 	private LinkedList<Equipment> eq;
 	private GameMap map;
 	private RequestSender sender;
+	private Coordinate loc;
 	
 	public Player(GameMap map){
 		this(null ,map);
@@ -29,22 +30,24 @@ public class Player{
 	public Player(RequestSender sender, GameMap map){
 		this.map = map;
 		this.sender = sender;
-		inventory = new Hashtable<Resource, Integer>();
-		eq = new LinkedList<Equipment>();
-		maxHp = -1;
+		inventory = null;
+		eq = null;
+		maxHp = 10;
 		currentHp = -1;
 	}
 	
+	public int getMaxHp(){ return maxHp;}
+	
 	public boolean isInitialized(){
-		return maxHp != -1 && currentHp != -1 ;
+		return   currentHp != -1 && inventory != null && eq != null && loc != null;
 	}
 	
 	public void setMap(GameMap map){ this.map = map;}
 	public void setRequestSender(RequestSender sender){ this.sender = sender;}
-	public int getMaxHp(){ return maxHp; }
 	public int getCurrentHp(){ return currentHp; }
-	public void setMaxHp(int value){ maxHp = value; }
 	public void setCurrentHp(int value){ currentHp = value; }
+	public void setLocation(Coordinate cor){ loc = cor; }
+	public Coordinate getLocation() {return loc;}
 	
 	public boolean act(Tile tile){
 		if(move(tile)){

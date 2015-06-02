@@ -189,7 +189,7 @@ public class Confirm extends GameState {
 		LinkedList<Update> updates = con.getUpdates();
 		synchronized(updates){
 			if(!updates.isEmpty())
-				up = updates.getFirst();
+				up = updates.removeFirst();
 			else return;
 		}
 		if(up.getType() == UpdateType.ACKNOWLEDGMENT){

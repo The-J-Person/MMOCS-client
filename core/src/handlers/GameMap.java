@@ -250,10 +250,6 @@ public class GameMap {
 				}
 			}
 		}
-		//player will always be drawn in the middle, to avoid a player disappearing when update is slow
-		sb.begin();
-		sb.draw(objects.getTexture(MapObjectType.PLAYER.name()), ((width-1)/2)*40, 40*(height-((height-1)/2)));
-		sb.end();
 	}
 	
 	public Tile getTile(int x, int y){

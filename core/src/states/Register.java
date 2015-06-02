@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -54,6 +55,14 @@ public class Register extends GameState {
 
 	@Override
 	public void update(float dt) {
+		if(con.isProcessing() == true){
+			stage.getActors().get(1).setVisible(true);
+			stage.getActors().get(0).setTouchable(Touchable.disabled);
+		}
+		else{
+			stage.getActors().get(1).setVisible(false);
+			stage.getActors().get(0).setTouchable(Touchable.enabled);
+		}
 		handleUpdates();
 
 	}
@@ -146,6 +155,18 @@ public class Register extends GameState {
         
         table.setBackground(skin.getDrawable("Background"));
         stage.addActor(table);
+        
+        table = new Table();
+        labelStyle = new LabelStyle();
+        
+        labelStyle.font = font;
+		labelStyle.fontColor = Color.BLACK;
+		labelStyle.background = skin.getDrawable("White");   
+        label = new Label("Waiting for server...", labelStyle); 
+        table.add(label);
+        table.bottom().left();
+        table.setVisible(false);
+        stage.addActor(table);
 	}
 	
 	private void register(){
@@ -179,7 +200,7 @@ public class Register extends GameState {
 		LinkedList<Update> updates = con.getUpdates();
 		synchronized(updates){
 			if(!updates.isEmpty())
-				up = updates.pop();
+				up = updates.removeFirst();
 			else return;
 		}
 		if(up.getType() == UpdateType.ACKNOWLEDGMENT){

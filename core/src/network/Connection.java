@@ -42,6 +42,7 @@ public class Connection {
 			sender = new RequestSender(new ObjectOutputStream(skt.getOutputStream()));
 			skt.getOutputStream().flush();
 			receiver = new UpdateReceiver( new ObjectInputStream(skt.getInputStream()), updates);
+			UpdateReceiver.setStop(false);
 			receiver.start();
 			return true;
 		}

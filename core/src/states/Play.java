@@ -4,17 +4,15 @@ import handlers.GameMap;
 import handlers.GameStateManager;
 import handlers.MyInput;
 import handlers.MyInputProcessor;
+
+import java.util.LinkedList;
+
 import network.Connection;
-import MMOCS.game.MMOCSClient;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -23,10 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import common.Coordinate;
-import common.FloorType;
-import common.MapObjectType;
+import common.Request;
+import common.RequestType;
 import common.Resource;
-import common.Tile;
 
 import entities.Player;
 
@@ -49,19 +46,25 @@ public class Play extends GameState {
 		map = gsm.getGame().getMap();
 		con = gsm.getGame().getCon();
 		player = gsm.getGame().getPlayer();
+		player.setRequestSender(con.getRequestSender());
+		map.setCenter(player.getLocation());
+		
+		LinkedList<Coordinate> cors = map.missingTiles();
+		for(Coordinate cor : cors){
+			con.sendRequest(new Request(RequestType.TILE , cor));
+		}
 		
 		//testing area
-		map = new GameMap(batch, null , 440, 320);
-		map.setCenter(new Coordinate(0,0));
-		map.update(new Tile(2,0,FloorType.STONE_BRICK, MapObjectType.MONSTER));
-		map.update(new Tile(-3,-3,FloorType.STONE_BRICK, MapObjectType.MONSTER));
-		map.update(new Tile(1,0,FloorType.STONE_BRICK, null));
-		map.update(new Tile(1,1,FloorType.STONE_BRICK, null));
-		map.update(new Tile(1,2,FloorType.STONE_BRICK, null));
-		map.update(new Tile(0,2,FloorType.WATER, null));
-		player.setMaxHp(200);
-		player.setCurrentHp(50);
-		//end of testing area
+//		map = new GameMap(batch, null , 440, 320);
+//		map.setCenter(new Coordinate(0,0));
+//		map.update(new Tile(2,0,FloorType.STONE_BRICK, MapObjectType.MONSTER));
+//		map.update(new Tile(-3,-3,FloorType.STONE_BRICK, MapObjectType.MONSTER));
+//		map.update(new Tile(1,0,FloorType.STONE_BRICK, null));
+//		map.update(new Tile(1,1,FloorType.STONE_BRICK, null));
+//		map.update(new Tile(1,2,FloorType.STONE_BRICK, null));
+//		map.update(new Tile(0,2,FloorType.WATER, null));
+//		player.setCurrentHp(50);
+//		//end of testing area
 		
 		//filling my stage :)
 		fillStage(stage);
