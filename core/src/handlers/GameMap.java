@@ -114,7 +114,7 @@ public class GameMap {
 	public boolean isNearby(Coordinate cor){
 		if(center.equals(cor))
 			return false;
-		if(cor.X() - center.X() <= 1 && cor.Y() - center.Y() <= 1 )
+		if(Math.abs(cor.X() - center.X()) <= 1 && Math.abs(cor.Y() - center.Y()) <= 1 )
 			return true;
 		return false;
 	}

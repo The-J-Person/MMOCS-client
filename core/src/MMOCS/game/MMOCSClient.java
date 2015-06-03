@@ -56,7 +56,7 @@ public class MMOCSClient extends ApplicationAdapter {
 		timer = new Timer();
 		con = new Connection();
 		map = new GameMap(batch,null, WIDTH, HEIGHT );
-		player = new Player(map);
+		player = new Player(con, map);
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package entities;
 import handlers.GameMap;
 
 import java.util.Hashtable;
-import java.util.LinkedList;
 
+import network.Connection;
 import network.RequestSender;
 
 import common.Coordinate;
@@ -18,16 +18,12 @@ public class Player{
 	private int maxHp;
 	private Hashtable<Resource,Integer> inventory;
 	private GameMap map;
-	private RequestSender sender;
+	private Connection con;
 	private Coordinate loc;
 	
-	public Player(GameMap map){
-		this(null ,map);
-	}
-	
-	public Player(RequestSender sender, GameMap map){
+	public Player(Connection con, GameMap map){
 		this.map = map;
-		this.sender = sender;
+		this.con = con;
 		inventory = null;
 		maxHp = 10;
 		currentHp = -1;
@@ -39,8 +35,6 @@ public class Player{
 		return   currentHp != -1 && inventory != null &&  loc != null;
 	}
 	
-	public void setMap(GameMap map){ this.map = map;}
-	public void setRequestSender(RequestSender sender){ this.sender = sender;}
 	public int getCurrentHp(){ return currentHp; }
 	public void setCurrentHp(int value){ currentHp = value; }
 	public void setLocation(Coordinate cor){ loc = cor; }
@@ -61,7 +55,7 @@ public class Player{
 			if(map.isNearby(tile.getCoordinate())){
 				if(tile.canMoveOn()){
 					Request req = new Request(RequestType.MOVE , tile.getCoordinate());
-					sender.sendRequest(req);
+					con.sendRequest(req);
 					return true;
 				}
 			}
@@ -73,12 +67,12 @@ public class Player{
 		if(tile != null){
 			if(tile.canAttack()){
 				Request req = new Request(RequestType.ATTACK , tile.getCoordinate());
-				sender.sendRequest(req);
+				con.sendRequest(req);
 				return true;
 			}
 			else if (tile.canHarvest()){
 				Request req = new Request(RequestType.HARVEST , tile.getCoordinate());
-				sender.sendRequest(req);
+				con.sendRequest(req);
 				return true;
 			}
 		}	

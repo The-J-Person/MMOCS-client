@@ -51,7 +51,6 @@ public class Play extends GameState {
 		map = gsm.getGame().getMap();
 		con = gsm.getGame().getCon();
 		player = gsm.getGame().getPlayer();
-		player.setRequestSender(con.getRequestSender());
 		map.setCenter(player.getLocation());
 		
 		LinkedList<Coordinate> cors = map.missingTiles();
@@ -253,14 +252,18 @@ public class Play extends GameState {
 		case ACKNOWLEDGMENT: 
 			Acknowledgement ack = (Acknowledgement)up.getData();
 			con.setProcessing(false);
-			if(ack.getRequestType() == RequestType.LOG_IN){
+			if(ack.getRequestType() == RequestType.MOVE){
 				if(ack.getAck()){
+					System.out.println("movement was accepted");
+					Coordinate newMid= (Coordinate)con.getRequestSender().requestToAck().getData();
+					map.setCenter(newMid);
 //					loading = true;
 //					waitLabel.setText("Loading...");
 				}
 				else{
-					MyDialog dia = new MyDialog("Failure" , "Please check the details you entered are correct");
-					dia.show(stage);
+					System.out.println("movement was declined");
+//					MyDialog dia = new MyDialog("Failure" , "Please check the details you entered are correct");
+//					dia.show(stage);
 				}
 			}
 			break;
@@ -275,6 +278,7 @@ public class Play extends GameState {
 		case TILE: 
 			Tile tile = (Tile) up.getData();
 			map.update(tile);
+			System.out.println("updated tile" + tile.getCoordinate().X()+ "," + tile.getCoordinate().Y());
 			break;
 		default: break;
 		}
