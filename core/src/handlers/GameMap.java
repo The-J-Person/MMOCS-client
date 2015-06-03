@@ -239,7 +239,7 @@ public class GameMap {
 				if(tile != null){
 					sb.begin();
 					sb.draw(floors.getTexture(tile.getFloorType().name()), j*40, 40*(height-i));
-					if(tile.getMapObjectType() != MapObjectType.NONE)
+					if(tile.getMapObjectType() != null)
 						sb.draw(objects.getTexture(tile.getMapObjectType().name()), j*40, 40*(height-i));
 					sb.end();
 				}
@@ -265,7 +265,6 @@ public class GameMap {
 		objects = new Content();
 		
 		floors.loadTexture("void.jpg", "void");//not official
-		floors.loadTexture("void.jpg",FloorType.NONE.name());
 		floors.loadTexture("Grass.png",FloorType.GRASS.name());
 		floors.loadTexture("Dirt.png",FloorType.DIRT.name());
 		floors.loadTexture("blue.jpg",FloorType.WATER.name()); //not official
