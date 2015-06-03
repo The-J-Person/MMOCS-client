@@ -42,7 +42,6 @@ public class Menu extends GameState {
 	private TextField passField;
 	private TextureAtlas textAtlas;
 	private Connection con;
-	private Window waitingDialog;
 	private Label waitLabel;
 	private boolean loading;
 	private Player player;
@@ -280,6 +279,8 @@ public class Menu extends GameState {
 	}
 	
 	private boolean isLoaded(){
+		loading = false;
+		waitLabel.setText("Waiting for server...");
 		return player.isInitialized();
 	}
 	

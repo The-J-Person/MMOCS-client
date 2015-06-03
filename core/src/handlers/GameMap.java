@@ -274,6 +274,7 @@ public class GameMap {
 		floors.loadTexture("Wood_floor.png",FloorType.WOOD.name());
 		floors.loadTexture("Stone_brick_floor.png",FloorType.STONE_BRICK.name());
 		floors.loadTexture("Door.png",FloorType.DOOR.name());
+		floors.loadTexture("red.jpg","RED");
 		
 		objects.loadTexture("player.png",MapObjectType.PLAYER.name()); 
 		objects.loadTexture("monster.png",MapObjectType.MONSTER.name());

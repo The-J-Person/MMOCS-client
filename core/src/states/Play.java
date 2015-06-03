@@ -142,8 +142,10 @@ public class Play extends GameState {
 
 	@Override
 	public void dispose() {
-		textAtlas.dispose();
-		// TODO Auto-generated method stub
+		player.setCurrentHp(-1); 
+		player.setLocation(null);
+		player.setInventory(null);
+		con.close();
 
 	}
 	
@@ -218,7 +220,7 @@ public class Play extends GameState {
 	private void drawHealthBar(){
 		batch.begin();
 		batch.draw(map.getFloorSprites().getTexture("void"),5, 5,150,30);
-		batch.draw(map.getFloorSprites().getTexture("GRASS"),5, 5,getPercentHpBar(150),30);
+		batch.draw(map.getFloorSprites().getTexture("RED"),5, 5,getPercentHpBar(150),30);
         font.draw(batch,
         		"HP: " +player.getCurrentHp() + "/" + player.getMaxHp() , 
         		40, 20);      
@@ -231,7 +233,9 @@ public class Play extends GameState {
 			x = (int)(full * player.getCurrentHp()/((float)player.getMaxHp())); 
 		return x;
 	}
-	private void logOut(){ System.out.println("logging out"); }
+	private void logOut(){ 
+		gsm.popState();
+	}
 	private void openInventory(){ System.out.println("opening inventory"); }
 	private void craft(){ System.out.println("weeee crafting"); }
 	private void openEquipments(){ System.out.println("as if i have equipment..."); }
@@ -254,9 +258,11 @@ public class Play extends GameState {
 			con.setProcessing(false);
 			if(ack.getRequestType() == RequestType.MOVE){
 				if(ack.getAck()){
-					System.out.println("movement was accepted");
+					System.out.println("i was here:" + map.getCenter().X() + "," + map.getCenter().Y());
 					Coordinate newMid= (Coordinate)con.getRequestSender().requestToAck().getData();
-					map.setCenter(newMid);
+					map.MoveCenter(map.getDirection(newMid));
+					player.setLocation(map.getCenter());
+					System.out.println("i moved to:" + map.getCenter().X() + "," + map.getCenter().Y());
 //					loading = true;
 //					waitLabel.setText("Loading...");
 				}
@@ -279,6 +285,7 @@ public class Play extends GameState {
 			Tile tile = (Tile) up.getData();
 			map.update(tile);
 			System.out.println("updated tile" + tile.getCoordinate().X()+ "," + tile.getCoordinate().Y());
+			System.out.println("on this tile there is a: " + tile.getMapObjectType());
 			break;
 		default: break;
 		}
