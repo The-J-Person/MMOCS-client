@@ -273,10 +273,10 @@ public class Play extends GameState {
 					map.MoveCenter(map.getDirection(newMid));
 					player.setLocation(map.getCenter());
 					System.out.println("i moved to:" + map.getCenter().X() + "," + map.getCenter().Y());
-					LinkedList<Coordinate> cors = map.missingTiles();
-					for(Coordinate cor : cors){
-						con.sendRequest(new Request(RequestType.TILE , cor));
-					}
+//					LinkedList<Coordinate> cors = map.missingTiles();
+//					for(Coordinate cor : cors){
+//						con.sendRequest(new Request(RequestType.TILE , cor));
+//					}
 				}
 			}
 			break;
