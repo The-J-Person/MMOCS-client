@@ -2,7 +2,6 @@ package states;
 
 import handlers.GameMap;
 import handlers.GameStateManager;
-import handlers.MyDialog;
 import handlers.MyInput;
 import handlers.MyInputProcessor;
 
@@ -17,10 +16,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import common.Acknowledgement;
 import common.Coordinate;
@@ -145,6 +146,7 @@ public class Play extends GameState {
 		player.setCurrentHp(-1); 
 		player.setLocation(null);
 		player.setInventory(null);
+		map.resetMap();
 		con.close();
 
 	}
@@ -236,7 +238,15 @@ public class Play extends GameState {
 	private void logOut(){ 
 		gsm.popState();
 	}
-	private void openInventory(){ System.out.println("opening inventory"); }
+	private void openInventory(){ 
+		System.out.println("opening inventory"); 
+		Window test = new Window("title", new Skin(Gdx.files.internal("uiskin.json")));
+		List<Integer> list = new List(new Skin(Gdx.files.internal("uiskin.json")));
+		list.setItems(3);
+		test.add(list);
+		stage.addActor(test);
+		
+	}
 	private void craft(){ System.out.println("weeee crafting"); }
 	private void openEquipments(){ System.out.println("as if i have equipment..."); }
 	
@@ -263,13 +273,10 @@ public class Play extends GameState {
 					map.MoveCenter(map.getDirection(newMid));
 					player.setLocation(map.getCenter());
 					System.out.println("i moved to:" + map.getCenter().X() + "," + map.getCenter().Y());
-//					loading = true;
-//					waitLabel.setText("Loading...");
-				}
-				else{
-					System.out.println("movement was declined");
-//					MyDialog dia = new MyDialog("Failure" , "Please check the details you entered are correct");
-//					dia.show(stage);
+					LinkedList<Coordinate> cors = map.missingTiles();
+					for(Coordinate cor : cors){
+						con.sendRequest(new Request(RequestType.TILE , cor));
+					}
 				}
 			}
 			break;

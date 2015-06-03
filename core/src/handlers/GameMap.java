@@ -89,8 +89,8 @@ public class GameMap {
 		if (!tileInRange(tile))
 			return;
 		int x,y;
-		x = (int)((tile.getCoordinate().X() - center.X()) + ((colsNum()-1)/2));
-		y = (int)((center.Y() - tile.getCoordinate().Y()) + ((rowsNum()-1)/2));
+		x = (int)((tile.getCoordinate().X() - center.X()) + getMiddleX());
+		y = (int)((center.Y() - tile.getCoordinate().Y()) + getMiddleY());
 		map.get(y).set(x, tile);
 	}
 	
@@ -284,5 +284,13 @@ public class GameMap {
 		objects.loadTexture("Wood_wall.png",MapObjectType.WALL_WOOD.name());
 		objects.loadTexture("Stone_wall.png",MapObjectType.WALL_STONE.name());
 		
+	}
+	
+	public void resetMap(){
+		for(int i = 0 ; i < rowsNum(); i++){
+			for(int j = 0 ; j < colsNum(); j++){
+				map.get(i).set(j, null);
+			}
+		}
 	}
 }
