@@ -17,6 +17,7 @@ import common.RequestType;
 import common.Resource;
 import common.Tile;
 import common.Update;
+import common.UpdateType;
 
 import entities.Player;
 
@@ -49,7 +50,14 @@ public class UpdateReceiver extends Thread {
 			try{
 				up = (Update)stream.readObject();
 				System.out.println(up.getType());
+				if(up.getType() == UpdateType.TILE){
+					Tile tile = (Tile)up.getData();
+					System.out.println(tile.getCoordinate().X()+","+tile.getCoordinate().Y() + ":" +tile.getFloorType() + "," + tile.getMapObjectType());
+
+				}
+				
 //				Thread.sleep(5000); // ONLY MEANT FOR TESTING MENUS!!!
+				
 				synchronized(updates){
 					updates.addLast(up);
 				}

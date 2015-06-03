@@ -239,7 +239,7 @@ public class GameMap {
 				if(tile != null){
 					sb.begin();
 					sb.draw(floors.getTexture(tile.getFloorType().name()), j*40, 40*(height-i));
-					if(tile.getMapObjectType() != null)
+					if(tile.getMapObjectType() != MapObjectType.NONE)
 						sb.draw(objects.getTexture(tile.getMapObjectType().name()), j*40, 40*(height-i));
 					sb.end();
 				}

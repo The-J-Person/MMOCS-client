@@ -82,7 +82,7 @@ public class Tile implements Serializable {
 	}
 	
 	public boolean canMoveOn(){
-		return f != null && f.canMoveOn() && mo == null;
+		return f != null && f.canMoveOn() && mo == MapObjectType.NONE;
 	}
 	
 	public boolean canHarvest(){ 

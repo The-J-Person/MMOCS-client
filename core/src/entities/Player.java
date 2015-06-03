@@ -80,7 +80,12 @@ public class Player{
 	}
 	
 	//TODO
-	public void addResource(Resource res){}
+	public void addResource(Resource res){
+		if(inventory.get(res) != null){
+			inventory.put(res, inventory.get(res) + 1);
+		}
+		inventory.put(res, 1);
+	}
 	//TODO
 	public void setInventory(Hashtable<Resource,Integer> inven){ this.inventory = inven;}
 

@@ -241,8 +241,10 @@ public class Play extends GameState {
 	private void openInventory(){ 
 		System.out.println("opening inventory"); 
 		Window test = new Window("title", new Skin(Gdx.files.internal("uiskin.json")));
-		List<Integer> list = new List(new Skin(Gdx.files.internal("uiskin.json")));
-		list.setItems(3);
+		List<Table> list = new List(new Skin(Gdx.files.internal("uiskin.json")));
+		Table table = new Table();
+//		list.seti
+//		list.setItems(3);
 		test.add(list);
 		stage.addActor(test);
 		
@@ -263,16 +265,18 @@ public class Play extends GameState {
 			else return;
 		}
 		switch (up.getType()){
-		case ACKNOWLEDGMENT: 
+		case ACKNOWLEDGMENT:
 			Acknowledgement ack = (Acknowledgement)up.getData();
 			con.setProcessing(false);
-			if(ack.getRequestType() == RequestType.MOVE){
+			switch(ack.getRequestType()){
+			case MOVE:
 				if(ack.getAck()){
 					System.out.println("i was here:" + map.getCenter().X() + "," + map.getCenter().Y());
 					Coordinate newMid= (Coordinate)con.getRequestSender().requestToAck().getData();
 					map.MoveCenter(map.getDirection(newMid));
 					player.setLocation(map.getCenter());
 					System.out.println("i moved to:" + map.getCenter().X() + "," + map.getCenter().Y());
+					
 //					LinkedList<Coordinate> cors = map.missingTiles();
 //					for(Coordinate cor : cors){
 //						con.sendRequest(new Request(RequestType.TILE , cor));
@@ -283,10 +287,13 @@ public class Play extends GameState {
 		case HIT_POINTS:
 			Integer hp = (Integer)up.getData();
 			player.setCurrentHp(hp);
+			if(hp == 0){
+				logOut();
+			}
 			break;
-		case INVENTORY:
-			Hashtable<Resource,Integer> inven = (Hashtable<Resource,Integer>) up.getData();
-			player.setInventory(inven);
+		case RESOURCES:
+			Resource res = (Resource)up.getData();
+			player.addResource(res);
 			break;
 		case TILE: 
 			Tile tile = (Tile) up.getData();
