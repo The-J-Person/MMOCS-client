@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import network.RequestSender;
 
 import common.Coordinate;
-import common.Equipment;
 import common.Request;
 import common.RequestType;
 import common.Resource;
@@ -18,7 +17,6 @@ public class Player{
 	private int currentHp;
 	private int maxHp;
 	private Hashtable<Resource,Integer> inventory;
-	private LinkedList<Equipment> eq;
 	private GameMap map;
 	private RequestSender sender;
 	private Coordinate loc;
@@ -31,7 +29,6 @@ public class Player{
 		this.map = map;
 		this.sender = sender;
 		inventory = null;
-		eq = null;
 		maxHp = 10;
 		currentHp = -1;
 	}
@@ -39,7 +36,7 @@ public class Player{
 	public int getMaxHp(){ return maxHp;}
 	
 	public boolean isInitialized(){
-		return   currentHp != -1 && inventory != null && eq != null && loc != null;
+		return   currentHp != -1 && inventory != null &&  loc != null;
 	}
 	
 	public void setMap(GameMap map){ this.map = map;}
@@ -92,8 +89,5 @@ public class Player{
 	public void addResource(Resource res){}
 	//TODO
 	public void setInventory(Hashtable<Resource,Integer> inven){ this.inventory = inven;}
-	//TODO
-	public void addEquipment(Equipment eq){}
-	//TODO
-	public void setEquipments(LinkedList<Equipment> eq){ this.eq = eq;}
+
 }

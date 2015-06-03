@@ -10,6 +10,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Timer;
 
 import entities.Player;
 
@@ -29,6 +30,7 @@ public class MMOCSClient extends ApplicationAdapter {
 	private Player player;
 	private Connection con;
 	private GameMap map;
+	private Timer timer;
 	
 	public SpriteBatch getSpriteBatch(){return batch;}
 	public OrthographicCamera getCam(){return cam;}
@@ -37,6 +39,7 @@ public class MMOCSClient extends ApplicationAdapter {
 	public Connection getCon() { return con; }
 	public GameMap getMap() { return map; }
 	public GameStateManager getGSM(){ return gsm; }
+	public Timer getTimer(){return timer;};
 	
 	
 	@Override
@@ -45,6 +48,7 @@ public class MMOCSClient extends ApplicationAdapter {
 		sprites = new Content();
 		sprites.loadTexture("blue.jpg", "blue");
 		
+		timer = new Timer();
 		con = new Connection();
 		map = new GameMap(batch,null, WIDTH, HEIGHT );
 		player = new Player(map);

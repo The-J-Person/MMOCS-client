@@ -58,6 +58,7 @@ public class Register extends GameState {
 		if(con.isProcessing() == true){
 			stage.getActors().get(1).setVisible(true);
 			stage.getActors().get(0).setTouchable(Touchable.disabled);
+			stage.setKeyboardFocus(null);
 		}
 		else{
 			stage.getActors().get(1).setVisible(false);

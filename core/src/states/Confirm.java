@@ -1,37 +1,35 @@
 package states;
 
+import handlers.GameStateManager;
+import handlers.MyDialog;
+
 import java.util.LinkedList;
 
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
+import com.badlogic.gdx.utils.Timer;
 import common.Acknowledgement;
 import common.Request;
 import common.RequestType;
 import common.Update;
 import common.UpdateType;
-
-import handlers.GameStateManager;
-import handlers.MyDialog;
 
 public class Confirm extends GameState {
 	
@@ -60,6 +58,7 @@ public class Confirm extends GameState {
 		if(con.isProcessing() == true){
 			stage.getActors().get(1).setVisible(true);
 			stage.getActors().get(0).setTouchable(Touchable.disabled);
+			stage.setKeyboardFocus(null);
 		}
 		else{
 			stage.getActors().get(1).setVisible(false);
@@ -167,7 +166,18 @@ public class Confirm extends GameState {
 			args[0] = userNameField.getText();
 			args[1] = codeField.getText();
 			con.sendRequest(new Request(RequestType.CONFIRM, args));
-			//waiting window is required 
+			
+			//TODO
+			gsm.getGame().getTimer().scheduleTask(new Timer.Task() {
+				
+				@Override
+				public void run() {
+					con.close();
+					MyDialog dia = new MyDialog("Timeout", "Connection timeout"); 
+					dia.show(stage);
+				}
+			}
+			, Connection.TIMEOUT);
 		}
 		else {
 			MyDialog dia = new MyDialog("Error", "Couldn't connect to the server"); 
@@ -193,6 +203,7 @@ public class Confirm extends GameState {
 			else return;
 		}
 		if(up.getType() == UpdateType.ACKNOWLEDGMENT){
+			gsm.getGame().getTimer().clear();
 			Acknowledgement ack = (Acknowledgement)up.getData();
 			if(ack.getRequestType() == RequestType.CONFIRM){
 				if(ack.getAck()){

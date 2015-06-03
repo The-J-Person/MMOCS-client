@@ -28,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import common.Acknowledgement;
 import common.Coordinate;
-import common.Equipment;
 import common.Request;
 import common.RequestType;
 import common.Resource;
@@ -68,6 +67,7 @@ public class Menu extends GameState {
 		if(con.isProcessing() == true || loading){
 			stage.getActors().get(1).setVisible(true);
 			stage.getActors().get(0).setTouchable(Touchable.disabled);
+			stage.setKeyboardFocus(null);
 		}
 		else{
 			stage.getActors().get(1).setVisible(false);
@@ -266,9 +266,6 @@ public class Menu extends GameState {
 		case INVENTORY:
 			Hashtable<Resource,Integer> inven = (Hashtable<Resource,Integer>) up.getData();
 			player.setInventory(inven);
-			break;
-		case EQUIPMENT_INVENTORY:
-			LinkedList<Equipment> eq = (LinkedList<Equipment>) up.getData();
 			break;
 		case COORDINATE: 
 			Coordinate center = (Coordinate) up.getData();

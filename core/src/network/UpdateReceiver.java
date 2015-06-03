@@ -12,7 +12,6 @@ import MMOCS.game.MMOCSClient;
 
 import common.Acknowledgement;
 import common.Coordinate;
-import common.Equipment;
 import common.Request;
 import common.RequestType;
 import common.Resource;

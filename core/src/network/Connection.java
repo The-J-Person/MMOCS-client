@@ -17,6 +17,7 @@ public class Connection {
 	private LinkedList<Update> updates;
 	private String address;
 	private int port;
+	public static final int TIMEOUT = 10;
 	
 	public Connection(){
 		skt = new Socket();
@@ -59,9 +60,12 @@ public class Connection {
 		UpdateReceiver.setStop(true);
 		if(isConnected())
 			try {
-				skt.close();
 				receiver = null;
 				sender = null;
+				synchronized(updates){
+					updates.clear();
+				}
+				skt.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
