@@ -265,6 +265,7 @@ public class GameMap {
 		objects = new Content();
 		
 		floors.loadTexture("void.jpg", "void");//not official
+		floors.loadTexture("void.jpg",FloorType.NONE.name());
 		floors.loadTexture("Grass.png",FloorType.GRASS.name());
 		floors.loadTexture("Dirt.png",FloorType.DIRT.name());
 		floors.loadTexture("blue.jpg",FloorType.WATER.name()); //not official
