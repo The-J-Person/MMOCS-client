@@ -1,18 +1,32 @@
 package common;
 
+import java.util.Hashtable;
+
 public enum Resource {
-	GRASS,
-	DIRT,
-	WATER,
-	MUD,
-	SAND,
-	STONE,
-	WOOD,
-	LEATHER,
-	STONE_BRICK,
-	DOOR,
-	BERRY,
-	MEAT;
+	GRASS(0),
+	DIRT(1),
+	WATER(2),
+	MUD(3),
+	SAND(4),
+	STONE(5),
+	WOOD(6),
+	LEATHER(7),
+	STONE_BRICK(8),
+	DOOR(9),
+	BERRY(10),
+	MEAT(11);
+	
+	private final int ID;
+	
+	private Resource(int ID)
+	{
+		this.ID = ID;
+	}
+	
+	public int getID()
+	{
+		return ID;
+	}
 	
 	public MapObjectType place_object()
 	{
@@ -52,6 +66,32 @@ public enum Resource {
 			default:
 				return null;
 		}
+	}
+	
+	/**
+	 * Returns ingridients required to craft resource.
+	 * NULL if resource cannot be crafted.
+	 * @return
+	 */
+	public Hashtable<Resource,Integer> recipe()
+	{
+		Hashtable<Resource,Integer> rec=new Hashtable<Resource,Integer>();
+		switch(this)
+		{
+		case MUD:
+			rec.put(WATER,1);
+			rec.put(DIRT,1);
+			break;
+		case STONE_BRICK:
+			rec.put(STONE,1);
+			break;
+		case DOOR:
+			rec.put(WOOD,2);
+			break;
+		default:
+			rec=null;
+		}
+		return rec;
 	}
 	static final long serialVersionUID = 52013438;
 }

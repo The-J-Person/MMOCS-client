@@ -211,10 +211,10 @@ public class GameMap {
 	public LinkedList<Coordinate> missingTiles(){
 		LinkedList<Coordinate> res = new LinkedList<Coordinate>();
 		for(int i = 0 ; i < rowsNum() ; i++){
-			for(int j = 0 ; i < colsNum() ; j++){
+			for(int j = 0 ; j < colsNum() ; j++){
 				if(map.get(i).get(j) == null){
-					int x = j - getMiddleY();
-					int y = getMiddleX() - i;
+					int x = j - getMiddleX();
+					int y = getMiddleY() - i;
 					res.add(new Coordinate(center.X() + x , center.Y() + y));
 				}  
 			}
@@ -273,6 +273,7 @@ public class GameMap {
 		floors.loadTexture("red.jpg",FloorType.STONE.name()); //missing
 		floors.loadTexture("Wood_floor.png",FloorType.WOOD.name());
 		floors.loadTexture("Stone_brick_floor.png",FloorType.STONE_BRICK.name());
+		floors.loadTexture("Door.png",FloorType.DOOR.name());
 		
 		objects.loadTexture("player.png",MapObjectType.PLAYER.name()); 
 		objects.loadTexture("monster.png",MapObjectType.MONSTER.name());

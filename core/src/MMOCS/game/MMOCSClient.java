@@ -47,18 +47,16 @@ public class MMOCSClient extends ApplicationAdapter {
 		//to be deleted
 		sprites = new Content();
 		sprites.loadTexture("blue.jpg", "blue");
-		
-		timer = new Timer();
-		con = new Connection();
-		map = new GameMap(batch,null, WIDTH, HEIGHT );
-		player = new Player(map);
-		
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, WIDTH , HEIGHT);
 		hudCam = new OrthographicCamera();
 		hudCam.setToOrtho(false, WIDTH , HEIGHT);
 		gsm = new GameStateManager(this);
+		timer = new Timer();
+		con = new Connection();
+		map = new GameMap(batch,null, WIDTH, HEIGHT );
+		player = new Player(map);
 	}
 
 	@Override

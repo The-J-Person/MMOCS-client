@@ -48,7 +48,8 @@ public class UpdateReceiver extends Thread {
 		while(!stop){
 			try{
 				up = (Update)stream.readObject();
-				Thread.sleep(5000); // ONLY MEANT FOR TESTING MENUS!!!
+				System.out.println(up.getType());
+//				Thread.sleep(5000); // ONLY MEANT FOR TESTING MENUS!!!
 				synchronized(updates){
 					updates.addLast(up);
 				}
@@ -86,10 +87,13 @@ public class UpdateReceiver extends Thread {
 //				}
 			}
 			catch(Exception e){
+				System.out.println("i died");
 				System.out.println(e.getMessage());
 				break;
+				
 			}
 		}
+		System.out.println("Thread stopped");
 	}
 	
 //	private void handleAck(Acknowledgement ack){
