@@ -6,6 +6,8 @@ import handlers.MyDialog;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import utility.Utility;
+
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
@@ -209,7 +211,7 @@ public class Menu extends GameState {
 			args[0] =  userNameField.getText();
 			args[1] = passField.getText();
 			con.getRequestSender().sendRequest(new Request(RequestType.LOG_IN, args));
-			
+			gsm.getGame().getTimer().scheduleTask(Utility.timeOutCounter(con, stage), Connection.TIMEOUT);
 		}
 		else {
 			MyDialog dia = new MyDialog("Error","Couldn't connect to the server.");

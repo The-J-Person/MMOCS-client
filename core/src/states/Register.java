@@ -5,6 +5,8 @@ import handlers.MyDialog;
 
 import java.util.LinkedList;
 
+import utility.Utility;
+
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
@@ -179,6 +181,7 @@ public class Register extends GameState {
 			args[1] = passField.getText();
 			args[2] = emailField.getText();
 			con.getRequestSender().sendRequest(new Request(RequestType.REGISTER, args));
+			gsm.getGame().getTimer().scheduleTask(Utility.timeOutCounter(con, stage), Connection.TIMEOUT);
 			//waiting window is required 
 		}
 		else {

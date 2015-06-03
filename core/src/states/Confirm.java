@@ -5,6 +5,8 @@ import handlers.MyDialog;
 
 import java.util.LinkedList;
 
+import utility.Utility;
+
 import network.Connection;
 
 import com.badlogic.gdx.Gdx;
@@ -166,18 +168,7 @@ public class Confirm extends GameState {
 			args[0] = userNameField.getText();
 			args[1] = codeField.getText();
 			con.sendRequest(new Request(RequestType.CONFIRM, args));
-			
-			//TODO
-			gsm.getGame().getTimer().scheduleTask(new Timer.Task() {
-				
-				@Override
-				public void run() {
-					con.close();
-					MyDialog dia = new MyDialog("Timeout", "Connection timeout"); 
-					dia.show(stage);
-				}
-			}
-			, Connection.TIMEOUT);
+			gsm.getGame().getTimer().scheduleTask(Utility.timeOutCounter(con, stage), Connection.TIMEOUT);
 		}
 		else {
 			MyDialog dia = new MyDialog("Error", "Couldn't connect to the server"); 
@@ -203,6 +194,7 @@ public class Confirm extends GameState {
 			else return;
 		}
 		if(up.getType() == UpdateType.ACKNOWLEDGMENT){
+			con.getRequestSender().setProcessing(false);
 			gsm.getGame().getTimer().clear();
 			Acknowledgement ack = (Acknowledgement)up.getData();
 			if(ack.getRequestType() == RequestType.CONFIRM){
