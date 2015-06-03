@@ -2,9 +2,11 @@ package states;
 
 import handlers.GameMap;
 import handlers.GameStateManager;
+import handlers.MyDialog;
 import handlers.MyInput;
 import handlers.MyInputProcessor;
 
+import java.util.Hashtable;
 import java.util.LinkedList;
 
 import network.Connection;
@@ -20,10 +22,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import common.Acknowledgement;
 import common.Coordinate;
 import common.Request;
 import common.RequestType;
 import common.Resource;
+import common.Tile;
+import common.Update;
 
 import entities.Player;
 
@@ -121,8 +126,8 @@ public class Play extends GameState {
 
 	@Override
 	public void update(float dt) {
-		if(map.isInitialized() && player.isInitialized())
-			handleInput();
+		handleUpdates();
+		handleInput();
 	}
 
 	@Override
@@ -234,5 +239,44 @@ public class Play extends GameState {
 	
 	public Stage getInputProcessor(){
 		return stage;
+	}
+	
+	private void handleUpdates(){
+		Update up;
+		LinkedList<Update> updates = con.getUpdates();
+		synchronized(updates){
+			if(!updates.isEmpty())
+				up = updates.removeFirst();
+			else return;
+		}
+		switch (up.getType()){
+		case ACKNOWLEDGMENT: 
+			Acknowledgement ack = (Acknowledgement)up.getData();
+			con.setProcessing(false);
+			if(ack.getRequestType() == RequestType.LOG_IN){
+				if(ack.getAck()){
+//					loading = true;
+//					waitLabel.setText("Loading...");
+				}
+				else{
+					MyDialog dia = new MyDialog("Failure" , "Please check the details you entered are correct");
+					dia.show(stage);
+				}
+			}
+			break;
+		case HIT_POINTS:
+			Integer hp = (Integer)up.getData();
+			player.setCurrentHp(hp);
+			break;
+		case INVENTORY:
+			Hashtable<Resource,Integer> inven = (Hashtable<Resource,Integer>) up.getData();
+			player.setInventory(inven);
+			break;
+		case TILE: 
+			Tile tile = (Tile) up.getData();
+			map.update(tile);
+			break;
+		default: break;
+		}
 	}
 }

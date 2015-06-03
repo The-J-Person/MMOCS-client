@@ -265,12 +265,12 @@ public class GameMap {
 		objects = new Content();
 		
 		floors.loadTexture("void.jpg", "void");//not official
-		floors.loadTexture("red.jpg",FloorType.GRASS.name());//missing	
-		floors.loadTexture("red.jpg",FloorType.DIRT.name());//missing
+		floors.loadTexture("Grass.png",FloorType.GRASS.name());
+		floors.loadTexture("Dirt.png",FloorType.DIRT.name());
 		floors.loadTexture("blue.jpg",FloorType.WATER.name()); //not official
 		floors.loadTexture("red.jpg",FloorType.MUD.name());//missing
 		floors.loadTexture("red.jpg",FloorType.SAND.name());//missing
-		floors.loadTexture("red.jpg",FloorType.STONE.name()); //missing
+		floors.loadTexture("Stone.png",FloorType.STONE.name()); 
 		floors.loadTexture("Wood_floor.png",FloorType.WOOD.name());
 		floors.loadTexture("Stone_brick_floor.png",FloorType.STONE_BRICK.name());
 		floors.loadTexture("Door.png",FloorType.DOOR.name());
