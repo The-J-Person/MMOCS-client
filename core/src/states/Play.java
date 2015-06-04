@@ -531,6 +531,7 @@ public class Play extends GameState {
 			str = str + selectedRes.name().toLowerCase();
 			selectedItem.setText(str);
 		}
-		
 	}
+	
+	
 }

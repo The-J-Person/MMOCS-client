@@ -83,7 +83,7 @@ public class Connection {
 	
 	public RequestSender getRequestSender(){ return sender; }
 	public boolean sendRequest(Request req){
-		if(sender != null)
+		if(sender != null && isConnected())
 			return sender.sendRequest(req);
 		return false;
 	}
