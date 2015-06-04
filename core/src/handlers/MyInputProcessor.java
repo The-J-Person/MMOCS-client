@@ -21,6 +21,9 @@ public class MyInputProcessor extends Stage {
 		if(k == Keys.RIGHT){
 			MyInput.setKey(MyInput.RIGHT_KEY, true);
 		}
+		if(k == Keys.ESCAPE){
+			MyInput.setKey(MyInput.CANCEL_KEY, true);
+		}
 		return super.keyDown(k);
 	}
 	public boolean keyUp(int k){
@@ -35,6 +38,9 @@ public class MyInputProcessor extends Stage {
 		}
 		if(k == Keys.RIGHT){
 			MyInput.setKey(MyInput.RIGHT_KEY, false);
+		}
+		if(k == Keys.ESCAPE){
+			MyInput.setKey(MyInput.CANCEL_KEY, false);
 		}
 		return super.keyUp(k);
 	}

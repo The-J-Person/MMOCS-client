@@ -116,6 +116,9 @@ public class Play extends GameState {
 			player.act(map.getTile(
 					map.getMiddleX()+1 , map.getMiddleY()));
 		}
+		else if(MyInput.isPressed(MyInput.CANCEL_KEY)){
+			selectedRes = null ;
+		}
 		
 		//must reset the mouse every time its handled
 		MyInput.resetMouseXY();
@@ -282,6 +285,19 @@ public class Play extends GameState {
 							con.sendRequest(new Request(RequestType.TILE , cor));
 						}
 					}
+					break;
+				case HARVEST:
+					if(ack.getAck()){
+						//i would like to add animation here
+					}
+					break;
+				case ATTACK:
+					if(ack.getAck()){
+						//i would like to add animation here
+					}
+					break;
+				default: break;
+				
 				}
 				break;
 			case HIT_POINTS:
@@ -298,8 +314,6 @@ public class Play extends GameState {
 			case TILE: 
 				Tile tile = (Tile) up.getData();
 				map.update(tile);
-				System.out.println("updated tile" + tile.getCoordinate().X()+ "," + tile.getCoordinate().Y());
-				System.out.println("on this tile there is a: " + tile.getMapObjectType());
 				break;
 			default: break;
 			}

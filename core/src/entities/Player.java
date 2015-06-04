@@ -89,4 +89,5 @@ public class Player{
 	//TODO
 	public void setInventory(Hashtable<Resource,Integer> inven){ this.inventory = inven;}
 
+
 }

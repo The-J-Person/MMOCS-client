@@ -5,11 +5,12 @@ public class MyInput {
 	public static boolean[] pkeys;
 	public static int[] mouseXY;
 	
-	public static final int NUM_KEYS = 4;
+	public static final int NUM_KEYS = 5;
 	public static final int UP_KEY = 0;
 	public static final int DOWN_KEY = 1;
 	public static final int RIGHT_KEY = 2;
 	public static final int LEFT_KEY = 3;
+	public static final int CANCEL_KEY = 3;
 			
 	public static final int MOUSE_KEYS = 2;
 	public static final int LEFT_MOUSE = 0;
