@@ -48,6 +48,7 @@ public class UpdateReceiver extends Thread {
 		Update up;
 		while(!stop){
 			try{
+				up = new Update();
 				up = (Update)stream.readObject();
 				System.out.println(up.getType());
 				if(up.getType() == UpdateType.TILE){

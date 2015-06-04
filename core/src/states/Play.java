@@ -259,49 +259,50 @@ public class Play extends GameState {
 	private void handleUpdates(){
 		Update up;
 		LinkedList<Update> updates = con.getUpdates();
-		synchronized(updates){
-			if(!updates.isEmpty())
-				up = updates.removeFirst();
-			else return;
-		}
-		switch (up.getType()){
-		case ACKNOWLEDGMENT:
-			Acknowledgement ack = (Acknowledgement)up.getData();
-			con.setProcessing(false);
-			switch(ack.getRequestType()){
-			case MOVE:
-				if(ack.getAck()){
-					System.out.println("i was here:" + map.getCenter().X() + "," + map.getCenter().Y());
-					Coordinate newMid= (Coordinate)con.getRequestSender().requestToAck().getData();
-					map.MoveCenter(map.getDirection(newMid));
-					player.setLocation(map.getCenter());
-					System.out.println("i moved to:" + map.getCenter().X() + "," + map.getCenter().Y());
-					
-//					LinkedList<Coordinate> cors = map.missingTiles();
-//					for(Coordinate cor : cors){
-//						con.sendRequest(new Request(RequestType.TILE , cor));
-//					}
+		for(int i= 0 ; i < 6 ; i++){
+			synchronized(updates){
+				if(!updates.isEmpty())
+					up = updates.removeFirst();
+				else return;
+			}
+			switch (up.getType()){
+			case ACKNOWLEDGMENT:
+				Acknowledgement ack = (Acknowledgement)up.getData();
+				con.setProcessing(false);
+				switch(ack.getRequestType()){
+				case MOVE:
+					if(ack.getAck()){
+						System.out.println("i was here:" + map.getCenter().X() + "," + map.getCenter().Y());
+						Coordinate newMid= (Coordinate)con.getRequestSender().requestToAck().getData();
+						map.MoveCenter(map.getDirection(newMid));
+						player.setLocation(map.getCenter());
+						System.out.println("i moved to:" + map.getCenter().X() + "," + map.getCenter().Y());
+						LinkedList<Coordinate> cors = map.missingTiles();
+						for(Coordinate cor : cors){
+							con.sendRequest(new Request(RequestType.TILE , cor));
+						}
+					}
 				}
+				break;
+			case HIT_POINTS:
+				Integer hp = (Integer)up.getData();
+				player.setCurrentHp(hp);
+				if(hp == 0){
+					logOut();
+				}
+				break;
+			case RESOURCES:
+				Resource res = (Resource)up.getData();
+				player.addResource(res);
+				break;
+			case TILE: 
+				Tile tile = (Tile) up.getData();
+				map.update(tile);
+				System.out.println("updated tile" + tile.getCoordinate().X()+ "," + tile.getCoordinate().Y());
+				System.out.println("on this tile there is a: " + tile.getMapObjectType());
+				break;
+			default: break;
 			}
-			break;
-		case HIT_POINTS:
-			Integer hp = (Integer)up.getData();
-			player.setCurrentHp(hp);
-			if(hp == 0){
-				logOut();
-			}
-			break;
-		case RESOURCES:
-			Resource res = (Resource)up.getData();
-			player.addResource(res);
-			break;
-		case TILE: 
-			Tile tile = (Tile) up.getData();
-			map.update(tile);
-			System.out.println("updated tile" + tile.getCoordinate().X()+ "," + tile.getCoordinate().Y());
-			System.out.println("on this tile there is a: " + tile.getMapObjectType());
-			break;
-		default: break;
 		}
 	}
 }

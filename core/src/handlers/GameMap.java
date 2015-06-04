@@ -255,6 +255,9 @@ public class GameMap {
 	public Tile getTile(int x, int y){
 		return map.get(y).get(x);
 	}
+	public void setTile(int x, int y, Tile tile){
+		map.get(y).set(x,tile);
+	}
 	
 	public int getMiddleX(){ return (colsNum()-1)/2; }
 	public int getMiddleY(){ return (rowsNum()-1)/2; }

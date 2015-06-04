@@ -101,6 +101,12 @@ public class Connection {
 	
 	public LinkedList<Update> getUpdates() { return updates; }
 	
+	public boolean isEmpty(){
+		synchronized(updates){
+			return updates.isEmpty();
+		}
+	}
+	
 	
 	
 }
