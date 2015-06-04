@@ -55,6 +55,7 @@ public class Play extends GameState {
 	private BitmapFont font;
 	private boolean openedWindow;
 	private Label messages;
+	private Label selectedItem;
 	private Content floorSprites;
 	private Content objectSprites;
 
@@ -62,8 +63,10 @@ public class Play extends GameState {
 	
 	public Play(GameStateManager gsm){
 		super(gsm);
+		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		setSprites();
-		messages = new Label("",new Skin(Gdx.files.internal("uiskin.json")));	
+		messages = new Label("",skin);
+		selectedItem = new Label("Item selected : None", skin);
 		openedWindow = false;
 		stage = new MyInputProcessor();
 		font = new BitmapFont();
@@ -94,7 +97,7 @@ public class Play extends GameState {
 							map.parsePixelsX(MyInput.getMouseX(MyInput.LEFT_MOUSE)), 
 							map.parsePixelsY(MyInput.getMouseY(MyInput.LEFT_MOUSE))), 
 							selectedRes, true);
-					isSelected = false;
+					setSelectedItem(false);
 				}
 			}
 			//if mouse is on map, move in the tile pressed
@@ -113,7 +116,7 @@ public class Play extends GameState {
 							map.parsePixelsX(MyInput.getMouseX(MyInput.LEFT_MOUSE)), 
 							map.parsePixelsY(MyInput.getMouseY(MyInput.LEFT_MOUSE))),
 							selectedRes, false);
-					isSelected = false;
+					setSelectedItem(false);
 				}
 			}
 			else{
@@ -128,7 +131,7 @@ public class Play extends GameState {
 		}
 		else if(MyInput.isMouseClicked(MyInput.RIGHT_MOUSE)){
 			selectedRes = null ;
-			isSelected = false;
+			setSelectedItem(false);
 		}
 		if(MyInput.isPressed(MyInput.DOWN_KEY)){
 			player.act(map.getTile(
@@ -148,7 +151,7 @@ public class Play extends GameState {
 		}
 		else if(MyInput.isPressed(MyInput.CANCEL_KEY)){
 			selectedRes = null ;
-			isSelected = false;
+			setSelectedItem(false);
 		}
 		
 		//must reset the mouse every time its handled
@@ -265,6 +268,14 @@ public class Play extends GameState {
         table.add(messages).left().fill();
         table.left().top();
         stage.addActor(table);
+        
+        table = new Table();
+        table.setFillParent(true);
+        table.add(selectedItem).right().fill();
+        table.right().top();
+        stage.addActor(table);
+        
+        
 	}
 	
 	private void drawHealthBar(){
@@ -313,7 +324,7 @@ public class Play extends GameState {
         	public void clicked(InputEvent event,float x,float y){
         		if(list.getSelected() != null){
         			selectedRes = list.getSelected().getResource();
-        			isSelected = true;
+        			setSelectedItem(true);
         			}
         		openedWindow = false;
         		MyInput.resetMouseXY();
@@ -507,5 +518,19 @@ public class Play extends GameState {
 		objectSprites.loadTexture("Rock.png",MapObjectType.ROCK.name());
 		objectSprites.loadTexture("Wood_wall.png",MapObjectType.WALL_WOOD.name());
 		objectSprites.loadTexture("Stone_wall.png",MapObjectType.WALL_STONE.name());	
+	}
+	
+	private void setSelectedItem(boolean state){
+		if(!state){
+			isSelected = false;
+			selectedItem.setText("Item selected : None");
+		}
+		else{
+			isSelected = true;
+			String str = "Item selected : ";
+			str = str + selectedRes.name().toLowerCase();
+			selectedItem.setText(str);
+		}
+		
 	}
 }
