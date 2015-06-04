@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import network.Connection;
+import utility.Resources;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL30;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -23,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import common.Acknowledgement;
 import common.Coordinate;
 import common.Request;
@@ -38,17 +42,20 @@ public class Play extends GameState {
 	private GameMap map;
 	private Player player;
 	private Connection con;
-	private Resource selectedRes; 
+	private boolean isSelected; 
+	private Resource selectedRes;
 	private MyInputProcessor stage;
-	private TextureAtlas textAtlas;
 	private BitmapFont font;
+	private boolean openedWindow;
 	
 	public Play(GameStateManager gsm){
 		super(gsm);
+		openedWindow = false;
 		stage = new MyInputProcessor();
 		font = new BitmapFont();
 		Gdx.input.setInputProcessor(stage);
 		selectedRes = null;
+		isSelected = false;
 		map = gsm.getGame().getMap();
 		con = gsm.getGame().getCon();
 		player = gsm.getGame().getPlayer();
@@ -78,25 +85,41 @@ public class Play extends GameState {
 	@Override
 	public void handleInput() {
 		if(MyInput.isMouseClicked(MyInput.LEFT_MOUSE)){
-			if(isSelected()){
-				//do a different action because i have an item selected
+			if(isSelected){
+				if(map.mouseOnMap(MyInput.getMouseX(MyInput.LEFT_MOUSE), MyInput.getMouseY(MyInput.LEFT_MOUSE))){
+					player.placeResource(map.getTile(
+							map.parsePixelsX(MyInput.getMouseX(MyInput.LEFT_MOUSE)), 
+							map.parsePixelsY(MyInput.getMouseY(MyInput.LEFT_MOUSE))), 
+							selectedRes, true);
+				}
 			}
 			//if mouse is on map, move in the tile pressed
-			else if(map.mouseOnMap(MyInput.getMouseX(MyInput.LEFT_MOUSE), MyInput.getMouseY(MyInput.LEFT_MOUSE))){
-				player.move(map.getTile(
+			else{ 
+				if(map.mouseOnMap(MyInput.getMouseX(MyInput.LEFT_MOUSE), MyInput.getMouseY(MyInput.LEFT_MOUSE))){
+					player.move(map.getTile(
 						map.parsePixelsX(MyInput.getMouseX(MyInput.LEFT_MOUSE)), 
 						map.parsePixelsY(MyInput.getMouseY(MyInput.LEFT_MOUSE))));
-			}		
+				}	
+			}
 		}
 		else if(MyInput.isMouseClicked(MyInput.RIGHT_MOUSE)){
-			if(isSelected()){
-				//do a different action because i have an item selected
+			if(isSelected){
+				if(map.mouseOnMap(MyInput.getMouseX(MyInput.LEFT_MOUSE), MyInput.getMouseY(MyInput.LEFT_MOUSE))){
+					player.placeResource(map.getTile(
+							map.parsePixelsX(MyInput.getMouseX(MyInput.LEFT_MOUSE)), 
+							map.parsePixelsY(MyInput.getMouseY(MyInput.LEFT_MOUSE))),
+							selectedRes, false);
+					isSelected = false;
+				}
 			}
+			else{
 			//if mouse is on map, harvest/attack in the tile pressed
-			if(map.mouseOnMap(MyInput.getMouseX(MyInput.RIGHT_MOUSE), MyInput.getMouseY(MyInput.RIGHT_MOUSE))){
-				player.harvest(map.getTile(
-						map.parsePixelsX(MyInput.getMouseX(MyInput.RIGHT_MOUSE)), 
-						map.parsePixelsY(MyInput.getMouseY(MyInput.RIGHT_MOUSE))));
+				if(map.mouseOnMap(MyInput.getMouseX(MyInput.RIGHT_MOUSE), MyInput.getMouseY(MyInput.RIGHT_MOUSE))){
+					player.harvest(map.getTile(
+							map.parsePixelsX(MyInput.getMouseX(MyInput.RIGHT_MOUSE)), 
+							map.parsePixelsY(MyInput.getMouseY(MyInput.RIGHT_MOUSE))));
+					isSelected = false;
+				}
 			}
 			
 		}
@@ -130,7 +153,13 @@ public class Play extends GameState {
 	@Override
 	public void update(float dt) {
 		handleUpdates();
-		handleInput();
+		if(!openedWindow){
+			stage.getActors().get(0).setTouchable(Touchable.enabled);
+			handleInput();
+		}
+		else{
+			stage.getActors().get(0).setTouchable(Touchable.disabled);
+		}
 	}
 
 	@Override
@@ -155,10 +184,6 @@ public class Play extends GameState {
 
 	}
 	
-	private boolean isSelected(){
-		return selectedRes != null;
-	}
-	
 	private void fillStage(Stage stage){
 		TextButton button;
 		Table table = new Table();
@@ -181,7 +206,8 @@ public class Play extends GameState {
         button.addListener(new ClickListener() {
             
         	public void clicked(InputEvent event,float x,float y){
-        		craft();
+        		if(!con.isProcessing())
+        			craft();
         	}
             
         });
@@ -192,7 +218,8 @@ public class Play extends GameState {
         button.addListener(new ClickListener() {
             
         	public void clicked(InputEvent event,float x,float y){
-        		openEquipments();
+        		if(!con.isProcessing())
+        			openEquipments();
         	}
             
         });
@@ -203,7 +230,8 @@ public class Play extends GameState {
         button.addListener(new ClickListener() {
             
         	public void clicked(InputEvent event,float x,float y){
-        		openInventory();
+        		if(!con.isProcessing())
+        			openInventory();
         	}
             
         });
@@ -219,7 +247,6 @@ public class Play extends GameState {
             
         });
         table.add(button).height(80).width(120).space(10);
-        
         stage.addActor(table);
 	}
 	
@@ -242,14 +269,58 @@ public class Play extends GameState {
 	private void logOut(){ 
 		gsm.popState();
 	}
-	private void openInventory(){ 
+	private void openInventory(){
+		TextButton button;
+		Table table;
+		Label label;
+		Array<Resources> arr;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		System.out.println("opening inventory"); 
-		Window test = new Window("title", skin);
-		List<Table> list = new List(skin);
-		Table table = new Table();
-		test.add(list);
-		stage.addActor(test);
+		
+		openedWindow = true;
+		
+		final Window win = new Window("Inventory", skin);
+		win.setKeepWithinStage(true);
+		
+		final List<Resources> list = new List<Resources>(skin);
+		arr = new Array<Resources>();
+		Hashtable<Resource,Integer> inven = player.getInventory();
+		for(Resource res : inven.keySet()){
+			arr.add(new Resources(res, inven.get(res) ));
+		}	
+		list.setItems(arr);
+		win.add(list).top().left();
+		
+		win.row();
+		
+		button = new TextButton("Pick" , skin);
+		button.addListener(new ClickListener() {
+            
+        	public void clicked(InputEvent event,float x,float y){
+        		if(list.getSelected() != null)
+        			selectedRes = list.getSelected().getResource();{
+        			isSelected = true;
+        			}
+        		openedWindow = false;
+        		MyInput.resetMouseXY();
+        		win.remove();
+        	}
+            
+        });
+		win.add(button).bottom();
+		
+		button = new TextButton("Close", skin);
+		button.addListener(new ClickListener() {
+            
+        	public void clicked(InputEvent event,float x,float y){
+        		openedWindow = false;
+        		MyInput.resetMouseXY();
+        		win.remove();
+        	}
+            
+        });
+		win.add(button).bottom();
+		win.setPosition(350, 350);
+		stage.addActor(win);
 	}
 	
 	private void craft(){ System.out.println("weeee crafting"); }
@@ -289,6 +360,10 @@ public class Play extends GameState {
 					break;
 				case ATTACK:
 					//i would like to add animation here
+					break;
+				case UPDATE_TILE:
+					player.removeResource(selectedRes);
+					selectedRes = null;
 					break;
 				default: break;
 				

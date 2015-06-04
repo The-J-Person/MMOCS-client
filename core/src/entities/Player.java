@@ -39,6 +39,7 @@ public class Player{
 	public void setCurrentHp(int value){ currentHp = value; }
 	public void setLocation(Coordinate cor){ loc = cor; }
 	public Coordinate getLocation() {return loc;}
+	public Hashtable<Resource,Integer> getInventory(){return inventory;}
 	
 	public boolean act(Tile tile){
 		if(move(tile)){
@@ -81,15 +82,45 @@ public class Player{
 		return false;
 	}
 	
-	//TODO
 	public void addResource(Resource res){
+		Integer amount;
+		amount = inventory.get(res); 
 		if(inventory.get(res) != null){
-			inventory.put(res, inventory.get(res) + 1);
+			inventory.put(res, amount + 1);
 		}
-		inventory.put(res, 1);
+		else inventory.put(res, 1);
 	}
-	//TODO
+	
+	public void placeResource(Tile tile, Resource res, boolean asObject){
+		if(tile != null){
+			Tile updatedTile = new Tile(tile);
+			if(asObject){
+				tile.setMapObjectType(res.place_object());
+				con.sendRequest(new Request(RequestType.UPDATE_TILE, tile));
+			}
+			else{
+				tile.setFloorType(res.place_floor());
+				con.sendRequest(new Request(RequestType.UPDATE_TILE, tile));
+			}
+		}
+	}
+	
+	public void removeResource(Resource res){
+		Integer amount;
+		amount = inventory.get(res);
+		if (amount == null)
+			return;
+		if(amount > 1 ){
+			inventory.put(res, amount - 1);
+		}
+		else inventory.remove(res);
+	}
+	
 	public void setInventory(Hashtable<Resource,Integer> inven){ this.inventory = inven;}
+	
+	public void craft(){
+		
+	}
 
 
 }
