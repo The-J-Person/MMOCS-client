@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import network.Connection;
+import utility.Recipe;
 import utility.Resources;
 
 import com.badlogic.gdx.Gdx;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -160,6 +162,7 @@ public class Play extends GameState {
 		else{
 			stage.getActors().get(0).setTouchable(Touchable.disabled);
 		}
+		stage.act(dt);
 	}
 
 	@Override
@@ -320,10 +323,78 @@ public class Play extends GameState {
         });
 		win.add(button).bottom();
 		win.setPosition(350, 350);
+		win.setSize(150, 250);
+//		ScrollPane scrolling = new ScrollPane(win);
+//		scrolling.layout();
+//		
+//		Table mainTable = new Table();
+//		mainTable.add(scrolling).width(300).height(100);
+//		mainTable.setPosition(350, 350);
+//		stage.addActor(mainTable);
 		stage.addActor(win);
 	}
 	
-	private void craft(){ System.out.println("weeee crafting"); }
+	private void craft(){ 
+		TextButton button;
+		Table table;
+		Label label;
+		Array<Recipe> arr;
+		ScrollPane scrolling;
+		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+		
+		openedWindow = true;
+		
+		final Window win = new Window("Crafting", skin);
+		win.setKeepWithinStage(true);
+		
+		final List<Recipe> list = new List<Recipe>(skin);
+		arr = new Array<Recipe>();
+		for(Resource res : Resource.values()){
+			if(res.recipe() != null)
+				arr.add(new Recipe(res));
+		}	
+		list.setItems(arr);
+		
+		win.add(list).top().left().colspan(2);
+		
+		win.row();
+		
+		button = new TextButton("Craft" , skin);
+		button.addListener(new ClickListener() {
+            
+        	public void clicked(InputEvent event,float x,float y){
+        		if(list.getSelected() != null){
+        			Recipe recipe = list.getSelected();
+        			player.craft(recipe.getProduct());
+        		}
+        		openedWindow = false;
+        		MyInput.resetMouseXY();
+        		win.remove();
+        	}
+            
+        });
+		win.add(button).bottom();
+		
+		button = new TextButton("Close", skin);
+		button.addListener(new ClickListener() {
+            
+        	public void clicked(InputEvent event,float x,float y){
+        		openedWindow = false;
+        		MyInput.resetMouseXY();
+        		win.remove();
+        	}
+            
+        });
+		
+		win.add(button).bottom();
+		scrolling = new ScrollPane(win);
+		scrolling.layout();
+//		win.setPosition(350, 350);
+		Table mainTable = new Table();
+		mainTable.add(scrolling).width(300).height(300);
+		mainTable.setPosition(350, 350);
+		stage.addActor(mainTable);
+	}
 	private void openEquipments(){ System.out.println("as if i have equipment..."); }
 	
 	public Stage getInputProcessor(){
@@ -364,6 +435,9 @@ public class Play extends GameState {
 				case UPDATE_TILE:
 					player.removeResource(selectedRes);
 					selectedRes = null;
+					break;
+				case CRAFT:
+					player.payCraft((Resource)con.getRequestSender().requestToAck().getData());
 					break;
 				default: break;
 				

@@ -118,8 +118,24 @@ public class Player{
 	
 	public void setInventory(Hashtable<Resource,Integer> inven){ this.inventory = inven;}
 	
-	public void craft(){
-		
+	public void craft(Resource res){
+		if(res!=null){
+			con.sendRequest(new Request(RequestType.CRAFT, res));
+		}
+	}
+	
+	public void payCraft(Resource res){
+		Hashtable<Resource,Integer> totalCosts;
+		totalCosts = res.recipe();
+		for(Resource cost : totalCosts.keySet()){
+			Integer amount = inventory.get(res);
+			if(amount != null){
+				Integer newAmount = totalCosts.get(cost) - amount;
+				if(newAmount <= 0)
+					inventory.remove(cost);
+				else inventory.put(cost, newAmount);
+			}
+		}
 	}
 
 
