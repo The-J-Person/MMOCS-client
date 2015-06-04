@@ -1,7 +1,9 @@
 package states;
 
+import handlers.Content;
 import handlers.GameMap;
 import handlers.GameStateManager;
+import handlers.MyDialog;
 import handlers.MyInput;
 import handlers.MyInputProcessor;
 
@@ -11,6 +13,7 @@ import java.util.LinkedList;
 import network.Connection;
 import utility.Recipe;
 import utility.Resources;
+import utility.Utility;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL30;
@@ -31,6 +34,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import common.Acknowledgement;
 import common.Coordinate;
+import common.FloorType;
+import common.MapObjectType;
 import common.Request;
 import common.RequestType;
 import common.Resource;
@@ -49,9 +54,16 @@ public class Play extends GameState {
 	private MyInputProcessor stage;
 	private BitmapFont font;
 	private boolean openedWindow;
+	private Label messages;
+	private Content floorSprites;
+	private Content objectSprites;
+
+	
 	
 	public Play(GameStateManager gsm){
 		super(gsm);
+		setSprites();
+		messages = new Label("",new Skin(Gdx.files.internal("uiskin.json")));	
 		openedWindow = false;
 		stage = new MyInputProcessor();
 		font = new BitmapFont();
@@ -62,23 +74,12 @@ public class Play extends GameState {
 		con = gsm.getGame().getCon();
 		player = gsm.getGame().getPlayer();
 		map.setCenter(player.getLocation());
+		map.setSprites(floorSprites, objectSprites);
 		
 		LinkedList<Coordinate> cors = map.missingTiles();
 		for(Coordinate cor : cors){
 			con.sendRequest(new Request(RequestType.TILE , cor));
 		}
-		
-		//testing area
-//		map = new GameMap(batch, null , 440, 320);
-//		map.setCenter(new Coordinate(0,0));
-//		map.update(new Tile(2,0,FloorType.STONE_BRICK, MapObjectType.MONSTER));
-//		map.update(new Tile(-3,-3,FloorType.STONE_BRICK, MapObjectType.MONSTER));
-//		map.update(new Tile(1,0,FloorType.STONE_BRICK, null));
-//		map.update(new Tile(1,1,FloorType.STONE_BRICK, null));
-//		map.update(new Tile(1,2,FloorType.STONE_BRICK, null));
-//		map.update(new Tile(0,2,FloorType.WATER, null));
-//		player.setCurrentHp(50);
-//		//end of testing area
 		
 		//filling my stage :)
 		fillStage(stage);
@@ -169,7 +170,7 @@ public class Play extends GameState {
 	public void render() {
 		Gdx.gl30.glClear(GL30.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(map.getFloorSprites().getTexture("STONE_BRICK"),0, 0,440,80);
+		batch.draw(floorSprites.getTexture("STONE_BRICK"),0, 0,440,80);
 		batch.end();
 		map.drawMap();
 		drawHealthBar();
@@ -183,6 +184,8 @@ public class Play extends GameState {
 		player.setLocation(null);
 		player.setInventory(null);
 		map.resetMap();
+		floorSprites.dispose();
+		objectSprites.dispose();
 		con.close();
 
 	}
@@ -251,12 +254,18 @@ public class Play extends GameState {
         });
         table.add(button).height(80).width(120).space(10);
         stage.addActor(table);
+        
+        table = new Table();
+        table.setFillParent(true);
+        table.add(messages).left().fill();
+        table.left().top();
+        stage.addActor(table);
 	}
 	
 	private void drawHealthBar(){
 		batch.begin();
-		batch.draw(map.getFloorSprites().getTexture("void"),5, 5,150,30);
-		batch.draw(map.getFloorSprites().getTexture("RED"),5, 5,getPercentHpBar(150),30);
+		batch.draw(floorSprites.getTexture("void"),5, 5,150,30);
+		batch.draw(floorSprites.getTexture("RED"),5, 5,getPercentHpBar(150),30);
         font.draw(batch,
         		"HP: " +player.getCurrentHp() + "/" + player.getMaxHp() , 
         		40, 20);      
@@ -274,8 +283,6 @@ public class Play extends GameState {
 	}
 	private void openInventory(){
 		TextButton button;
-		Table table;
-		Label label;
 		Array<Resources> arr;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		
@@ -336,8 +343,6 @@ public class Play extends GameState {
 	
 	private void craft(){ 
 		TextButton button;
-		Table table;
-		Label label;
 		Array<Recipe> arr;
 		ScrollPane scrolling;
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -404,7 +409,7 @@ public class Play extends GameState {
 	private void handleUpdates(){
 		Update up;
 		LinkedList<Update> updates = con.getUpdates();
-		for(int i= 0 ; i < 6 ; i++){
+		for(int i= 0 ; i < 4 ; i++){
 			synchronized(updates){
 				if(!updates.isEmpty())
 					up = updates.removeFirst();
@@ -427,7 +432,6 @@ public class Play extends GameState {
 					}
 					break;
 				case HARVEST:
-					//i would like to add animation here
 					break;
 				case ATTACK:
 					//i would like to add animation here
@@ -437,22 +441,34 @@ public class Play extends GameState {
 					selectedRes = null;
 					break;
 				case CRAFT:
-					player.payCraft((Resource)con.getRequestSender().requestToAck().getData());
+					Resource res = (Resource)con.getRequestSender().requestToAck().getData();
+					player.payCraft(res);
+					messages.setText("You've crafted " +  res.name().toLowerCase() );
+					gsm.getGame().getTimer().clear();
+					gsm.getGame().getTimer().scheduleTask(Utility.MessageDisappear(messages), 3);
 					break;
 				default: break;
 				
 				}
 				break;
 			case HIT_POINTS:
-				Integer hp = (Integer)up.getData();
+				Integer hp = (Integer)up.getData();		
 				player.setCurrentHp(hp);
+				messages.setText("You've lost "+ hp + " health points!!" );
+				gsm.getGame().getTimer().clear();
+				gsm.getGame().getTimer().scheduleTask(Utility.MessageDisappear(messages), 3);
 				if(hp == 0){
+					MyDialog dia = new MyDialog("Death...", "you have died by do not worry you can start again :)");
+					dia.show(stage);
 					logOut();
 				}
 				break;
 			case RESOURCES:
 				Resource res = (Resource)up.getData();
 				player.addResource(res);
+				messages.setText("You've harvested : " + res.name().toLowerCase());
+				gsm.getGame().getTimer().clear();
+				gsm.getGame().getTimer().scheduleTask(Utility.MessageDisappear(messages), 3);
 				break;
 			case TILE: 
 				Tile tile = (Tile) up.getData();
@@ -461,5 +477,30 @@ public class Play extends GameState {
 			default: break;
 			}
 		}
+	}
+	
+	private void setSprites(){
+		floorSprites = new Content();
+		objectSprites = new Content();
+		
+		floorSprites.loadTexture("void.jpg", "void");//not official
+		floorSprites.loadTexture("Grass.png",FloorType.GRASS.name());
+		floorSprites.loadTexture("Dirt.png",FloorType.DIRT.name());
+		floorSprites.loadTexture("blue.jpg",FloorType.WATER.name()); //not official
+		floorSprites.loadTexture("red.jpg",FloorType.MUD.name());//missing
+		floorSprites.loadTexture("red.jpg",FloorType.SAND.name());//missing
+		floorSprites.loadTexture("Stone.png",FloorType.STONE.name()); 
+		floorSprites.loadTexture("Wood_floor.png",FloorType.WOOD.name());
+		floorSprites.loadTexture("Stone_brick_floor.png",FloorType.STONE_BRICK.name());
+		floorSprites.loadTexture("Door.png",FloorType.DOOR.name());
+		floorSprites.loadTexture("red.jpg","RED");
+		
+		objectSprites.loadTexture("player.png",MapObjectType.PLAYER.name()); 
+		objectSprites.loadTexture("monster.png",MapObjectType.MONSTER.name());
+		objectSprites.loadTexture("tree.png",MapObjectType.TREE.name());
+		objectSprites.loadTexture("Bush.png",MapObjectType.BUSH.name());
+		objectSprites.loadTexture("Rock.png",MapObjectType.ROCK.name());
+		objectSprites.loadTexture("Wood_wall.png",MapObjectType.WALL_WOOD.name());
+		objectSprites.loadTexture("Stone_wall.png",MapObjectType.WALL_STONE.name());	
 	}
 }

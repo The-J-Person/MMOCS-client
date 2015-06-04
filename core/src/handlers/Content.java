@@ -25,4 +25,9 @@ public class Content {
 		if (tex != null)
 			tex.dispose();
 	}
+	
+	public void dispose(){
+		for(String str : textures.keySet())
+			disposeTexture(str);
+	}
 }

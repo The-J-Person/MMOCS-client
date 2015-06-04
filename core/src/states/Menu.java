@@ -6,9 +6,8 @@ import handlers.MyDialog;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
-import utility.Utility;
-
 import network.Connection;
+import utility.Utility;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -26,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import common.Acknowledgement;
 import common.Coordinate;
@@ -35,6 +33,7 @@ import common.RequestType;
 import common.Resource;
 import common.Update;
 
+import entities.Admin;
 import entities.Player;
 
 public class Menu extends GameState {
@@ -47,9 +46,11 @@ public class Menu extends GameState {
 	private Label waitLabel;
 	private boolean loading;
 	private Player player;
+	private boolean receivedPermission;
 	
 	public Menu(GameStateManager gsm){
 		super(gsm);
+		receivedPermission = false;
 		player = gsm.getGame().getPlayer();
 		loading = false;
 		con = gsm.getGame().getCon();
@@ -59,8 +60,6 @@ public class Menu extends GameState {
 	}
 	@Override
 	public void handleInput() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -212,6 +211,7 @@ public class Menu extends GameState {
 			args[1] = passField.getText();
 			con.getRequestSender().sendRequest(new Request(RequestType.LOG_IN, args));
 			gsm.getGame().getTimer().scheduleTask(Utility.timeOutCounter(con, stage), Connection.TIMEOUT);
+			receivedPermission = false;
 		}
 		else {
 			MyDialog dia = new MyDialog("Error","Couldn't connect to the server.");
@@ -273,18 +273,21 @@ public class Menu extends GameState {
 			Coordinate center = (Coordinate) up.getData();
 			player.setLocation(center);
 			break;
+//		case PERMISSION:
+//			Boolean isAdmin = (Boolean)(up.getData());
+//			if(isAdmin)
+//				player = new Admin(player);
+//			receivedPermission = true;
+//			break;
 		default: break;
 		}
-	}
-	
-	private boolean isLoading(){
-		return loading;
 	}
 	
 	private boolean isLoaded(){
 		loading = false;
 		waitLabel.setText("Waiting for server...");
-		return player.isInitialized();
+		return player.isInitialized() //&& receivedPermission = true;
+				;
 	}
 	
 	

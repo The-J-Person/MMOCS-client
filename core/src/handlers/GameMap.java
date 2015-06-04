@@ -5,8 +5,6 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.Coordinate;
-import common.FloorType;
-import common.MapObjectType;
 import common.Tile;
 
 public class GameMap {
@@ -34,16 +32,12 @@ public class GameMap {
 			}
 			map.add(list);
 		}
-		setSprites();
 	}
 	
-	public boolean isInitialized(){
-		return center != null;
+	public void setSprites(Content floors, Content objects){
+		this.floors = floors;
+		this.objects = objects;
 	}
-	//may delete later
-	public Content getFloorSprites(){return floors;}
-	public Content getObjectSprites(){return objects;}
-	//end of may delete
 	
 	public void setCenter(Coordinate center){ this.center = center;}
 	public Coordinate getCenter() { return center; }
@@ -72,15 +66,6 @@ public class GameMap {
 			return true;
 		return false;
 	}
-	/* possibly useless
-	private boolean isNearby(int x, int y){
-		if( x == getMiddleX() && y == getMiddleY() )
-			return false;
-		if( Math.abs(x - getMiddleX()) <= 1 && Math.abs(y - getMiddleY()) <= 1)
-			return true;
-		return false;
-	}
-	*/
 	
 	public int rowsNum(){ return map.size(); }
 	public int colsNum(){ return map.getFirst().size();}
@@ -92,23 +77,6 @@ public class GameMap {
 		x = (int)((tile.getCoordinate().X() - center.X()) + getMiddleX());
 		y = (int)((center.Y() - tile.getCoordinate().Y()) + getMiddleY());
 		map.get(y).set(x, tile);
-	}
-	
-	public Tile lookInDirection(Direction dir){
-		int x = (colsNum()-1) / 2;
-		int y = (rowsNum()-1) / 2;
-		switch(dir){
-		case WEST:
-			return map.get(y).get(x-1);
-		case NORTH:
-			return map.get(y-1).get(x);
-		case EAST:
-			return map.get(y).get(x+1);
-		case SOUTH:
-			return map.get(y+1).get(x);
-		default: break;
-		}
-		return null;
 	}
 	
 	public boolean isNearby(Coordinate cor){
@@ -223,9 +191,6 @@ public class GameMap {
 	}
 	
 	public void drawMap(){
-		if(!isInitialized())
-			return;
-		
 		Iterator <Tile> w_iter;
 		Iterator<LinkedList<Tile>> h_iter = map.iterator();
 		if(h_iter.hasNext())
@@ -255,39 +220,9 @@ public class GameMap {
 	public Tile getTile(int x, int y){
 		return map.get(y).get(x);
 	}
-	public void setTile(int x, int y, Tile tile){
-		map.get(y).set(x,tile);
-	}
 	
 	public int getMiddleX(){ return (colsNum()-1)/2; }
 	public int getMiddleY(){ return (rowsNum()-1)/2; }
-	
-	
-	private void setSprites(){
-		floors = new Content();
-		objects = new Content();
-		
-		floors.loadTexture("void.jpg", "void");//not official
-		floors.loadTexture("Grass.png",FloorType.GRASS.name());
-		floors.loadTexture("Dirt.png",FloorType.DIRT.name());
-		floors.loadTexture("blue.jpg",FloorType.WATER.name()); //not official
-		floors.loadTexture("red.jpg",FloorType.MUD.name());//missing
-		floors.loadTexture("red.jpg",FloorType.SAND.name());//missing
-		floors.loadTexture("Stone.png",FloorType.STONE.name()); 
-		floors.loadTexture("Wood_floor.png",FloorType.WOOD.name());
-		floors.loadTexture("Stone_brick_floor.png",FloorType.STONE_BRICK.name());
-		floors.loadTexture("Door.png",FloorType.DOOR.name());
-		floors.loadTexture("red.jpg","RED");
-		
-		objects.loadTexture("player.png",MapObjectType.PLAYER.name()); 
-		objects.loadTexture("monster.png",MapObjectType.MONSTER.name());
-		objects.loadTexture("tree.png",MapObjectType.TREE.name());
-		objects.loadTexture("Bush.png",MapObjectType.BUSH.name());
-		objects.loadTexture("Rock.png",MapObjectType.ROCK.name());
-		objects.loadTexture("Wood_wall.png",MapObjectType.WALL_WOOD.name());
-		objects.loadTexture("Stone_wall.png",MapObjectType.WALL_STONE.name());
-		
-	}
 	
 	public void resetMap(){
 		for(int i = 0 ; i < rowsNum(); i++){

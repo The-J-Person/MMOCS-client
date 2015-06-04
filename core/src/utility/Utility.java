@@ -4,6 +4,7 @@ import handlers.MyDialog;
 import network.Connection;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Timer;
 
 public class Utility {
@@ -18,6 +19,16 @@ public class Utility {
 				dia.show(stage);
 			}
 		};
+	}
+	
+	public static Timer.Task MessageDisappear(final Label label){
+		return  new Timer.Task(){
+			@Override
+			public void run() {
+				label.setText("");
+			}
+		};
+		
 	}
 
 }

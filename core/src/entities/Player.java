@@ -5,8 +5,6 @@ import handlers.GameMap;
 import java.util.Hashtable;
 
 import network.Connection;
-import network.RequestSender;
-
 import common.Coordinate;
 import common.Request;
 import common.RequestType;
@@ -14,12 +12,12 @@ import common.Resource;
 import common.Tile;
 
 public class Player{
-	private int currentHp;
-	private int maxHp;
-	private Hashtable<Resource,Integer> inventory;
-	private GameMap map;
-	private Connection con;
-	private Coordinate loc;
+	protected int currentHp;
+	protected int maxHp;
+	protected Hashtable<Resource,Integer> inventory;
+	protected GameMap map;
+	protected Connection con;
+	protected Coordinate loc;
 	
 	public Player(Connection con, GameMap map){
 		this.map = map;
@@ -29,6 +27,14 @@ public class Player{
 		currentHp = -1;
 	}
 	
+	public Player(Player player){
+		this.currentHp = player.currentHp;
+		this.maxHp = player.maxHp;
+		this.inventory = player.inventory;
+		this.map = player.map;
+		this.con = player.con;
+		this.loc = player.loc;
+	}	
 	public int getMaxHp(){ return maxHp;}
 	
 	public boolean isInitialized(){
@@ -96,11 +102,11 @@ public class Player{
 			Tile updatedTile = new Tile(tile);
 			if(asObject){
 				tile.setMapObjectType(res.place_object());
-				con.sendRequest(new Request(RequestType.UPDATE_TILE, tile));
+				con.sendRequest(new Request(RequestType.UPDATE_TILE, updatedTile));
 			}
 			else{
 				tile.setFloorType(res.place_floor());
-				con.sendRequest(new Request(RequestType.UPDATE_TILE, tile));
+				con.sendRequest(new Request(RequestType.UPDATE_TILE, updatedTile));
 			}
 		}
 	}
@@ -137,6 +143,8 @@ public class Player{
 			}
 		}
 	}
+	
+	public boolean isAdmin(){return false;}
 
 
 }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Timer;
 
+import entities.Admin;
 import entities.Player;
 
 public class MMOCSClient extends ApplicationAdapter {
@@ -56,7 +57,7 @@ public class MMOCSClient extends ApplicationAdapter {
 		timer = new Timer();
 		con = new Connection();
 		map = new GameMap(batch,null, WIDTH, HEIGHT );
-		player = new Player(con, map);
+		player = new Admin(con, map);
 	}
 
 	@Override

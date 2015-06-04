@@ -2,8 +2,6 @@ package handlers;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class MyInputProcessor extends Stage {
@@ -24,12 +22,6 @@ public class MyInputProcessor extends Stage {
 		if(k == Keys.ESCAPE){
 			MyInput.setKey(MyInput.CANCEL_KEY, true);
 		}
-		if(k == Keys.Z){
-			MyInput.setKey(MyInput.Z_KEY, true);
-		}
-		if(k == Keys.X){
-			MyInput.setKey(MyInput.X_KEY, true);
-		}
 		return super.keyDown(k);
 	}
 	public boolean keyUp(int k){
@@ -47,12 +39,6 @@ public class MyInputProcessor extends Stage {
 		}
 		if(k == Keys.ESCAPE){
 			MyInput.setKey(MyInput.CANCEL_KEY, false);
-		}
-		if(k == Keys.Z){
-			MyInput.setKey(MyInput.Z_KEY, false);
-		}
-		if(k == Keys.X){
-			MyInput.setKey(MyInput.X_KEY, false);
 		}
 		return super.keyUp(k);
 	}

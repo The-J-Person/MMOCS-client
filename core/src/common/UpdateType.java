@@ -7,6 +7,7 @@ public enum UpdateType {
 	RESOURCES,
 	INVENTORY,
 	COORDINATE;
+	//PERMISSION;
 	
 	static final long serialVersionUID = 23340012;
 }
