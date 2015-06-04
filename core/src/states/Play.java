@@ -129,7 +129,7 @@ public class Play extends GameState {
 			}
 			
 		}
-		else if(MyInput.isMouseClicked(MyInput.RIGHT_MOUSE)){
+		else if(MyInput.isMouseClicked(MyInput.WHEEL_MOUSE)){
 			selectedRes = null ;
 			setSelectedItem(false);
 		}

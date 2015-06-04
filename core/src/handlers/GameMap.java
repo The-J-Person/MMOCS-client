@@ -203,7 +203,8 @@ public class GameMap {
 				Tile tile = w_iter.next(); // 
 				if(tile != null){
 					sb.begin();
-					sb.draw(floors.getTexture(tile.getFloorType().name()), j*40, 40*(height-i));
+					if(tile.getFloorType() != null)
+						sb.draw(floors.getTexture(tile.getFloorType().name()), j*40, 40*(height-i));
 					if(tile.getMapObjectType() != null)
 						sb.draw(objects.getTexture(tile.getMapObjectType().name()), j*40, 40*(height-i));
 					sb.end();
