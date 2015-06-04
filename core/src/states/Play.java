@@ -94,6 +94,7 @@ public class Play extends GameState {
 							map.parsePixelsX(MyInput.getMouseX(MyInput.LEFT_MOUSE)), 
 							map.parsePixelsY(MyInput.getMouseY(MyInput.LEFT_MOUSE))), 
 							selectedRes, true);
+					isSelected = false;
 				}
 			}
 			//if mouse is on map, move in the tile pressed
@@ -121,7 +122,6 @@ public class Play extends GameState {
 					player.harvest(map.getTile(
 							map.parsePixelsX(MyInput.getMouseX(MyInput.RIGHT_MOUSE)), 
 							map.parsePixelsY(MyInput.getMouseY(MyInput.RIGHT_MOUSE))));
-					isSelected = false;
 				}
 			}
 			
