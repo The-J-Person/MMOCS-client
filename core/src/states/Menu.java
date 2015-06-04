@@ -248,6 +248,7 @@ public class Menu extends GameState {
 		switch (up.getType()){
 		case ACKNOWLEDGMENT: 
 			Acknowledgement ack = (Acknowledgement)up.getData();
+			gsm.getGame().getTimer().clear();
 			con.setProcessing(false);
 			if(ack.getRequestType() == RequestType.LOG_IN){
 				if(ack.getAck()){

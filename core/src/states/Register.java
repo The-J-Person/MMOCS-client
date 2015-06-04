@@ -208,6 +208,7 @@ public class Register extends GameState {
 			else return;
 		}
 		if(up.getType() == UpdateType.ACKNOWLEDGMENT){
+			gsm.getGame().getTimer().clear();
 			Acknowledgement ack = (Acknowledgement)up.getData();
 			if(ack.getRequestType() == RequestType.REGISTER){
 				if(ack.getAck()){
