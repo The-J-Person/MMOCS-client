@@ -144,6 +144,7 @@ public class Play extends GameState {
 		}
 		else if(MyInput.isPressed(MyInput.CANCEL_KEY)){
 			selectedRes = null ;
+			isSelected = false;
 		}
 		
 		//must reset the mouse every time its handled
