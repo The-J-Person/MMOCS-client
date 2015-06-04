@@ -65,15 +65,17 @@ public class Player{
 	
 	public boolean harvest(Tile tile){
 		if(tile != null){
-			if(tile.canAttack()){
-				Request req = new Request(RequestType.ATTACK , tile.getCoordinate());
-				con.sendRequest(req);
-				return true;
-			}
-			else if (tile.canHarvest()){
-				Request req = new Request(RequestType.HARVEST , tile.getCoordinate());
-				con.sendRequest(req);
-				return true;
+			if(map.isNearby(tile.getCoordinate())){
+				if(tile.canAttack()){
+					Request req = new Request(RequestType.ATTACK , tile.getCoordinate());
+					con.sendRequest(req);
+					return true;
+				}
+				else if (tile.canHarvest()){
+					Request req = new Request(RequestType.HARVEST , tile.getCoordinate());
+					con.sendRequest(req);
+					return true;
+				}
 			}
 		}	
 		return false;

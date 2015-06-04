@@ -32,6 +32,10 @@ public enum FloorType {
 		return this != WATER;
 	}
 	
+	public boolean canHarvest(){
+		return true; //for now...
+	}
+	
 	public Resource resource()
 	{
 		switch(this)

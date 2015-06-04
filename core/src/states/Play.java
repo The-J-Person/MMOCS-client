@@ -94,7 +94,7 @@ public class Play extends GameState {
 			}
 			//if mouse is on map, harvest/attack in the tile pressed
 			if(map.mouseOnMap(MyInput.getMouseX(MyInput.RIGHT_MOUSE), MyInput.getMouseY(MyInput.RIGHT_MOUSE))){
-				player.act(map.getTile(
+				player.harvest(map.getTile(
 						map.parsePixelsX(MyInput.getMouseX(MyInput.RIGHT_MOUSE)), 
 						map.parsePixelsY(MyInput.getMouseY(MyInput.RIGHT_MOUSE))));
 			}
@@ -146,6 +146,7 @@ public class Play extends GameState {
 
 	@Override
 	public void dispose() {
+		con.sendRequest(new Request(RequestType.LOG_OUT, null));
 		player.setCurrentHp(-1); 
 		player.setLocation(null);
 		player.setInventory(null);
@@ -242,16 +243,15 @@ public class Play extends GameState {
 		gsm.popState();
 	}
 	private void openInventory(){ 
+		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		System.out.println("opening inventory"); 
-		Window test = new Window("title", new Skin(Gdx.files.internal("uiskin.json")));
-		List<Table> list = new List(new Skin(Gdx.files.internal("uiskin.json")));
+		Window test = new Window("title", skin);
+		List<Table> list = new List(skin);
 		Table table = new Table();
-//		list.seti
-//		list.setItems(3);
 		test.add(list);
 		stage.addActor(test);
-		
 	}
+	
 	private void craft(){ System.out.println("weeee crafting"); }
 	private void openEquipments(){ System.out.println("as if i have equipment..."); }
 	
@@ -275,11 +275,9 @@ public class Play extends GameState {
 				switch(ack.getRequestType()){
 				case MOVE:
 					if(ack.getAck()){
-						System.out.println("i was here:" + map.getCenter().X() + "," + map.getCenter().Y());
 						Coordinate newMid= (Coordinate)con.getRequestSender().requestToAck().getData();
 						map.MoveCenter(map.getDirection(newMid));
 						player.setLocation(map.getCenter());
-						System.out.println("i moved to:" + map.getCenter().X() + "," + map.getCenter().Y());
 						LinkedList<Coordinate> cors = map.missingTiles();
 						for(Coordinate cor : cors){
 							con.sendRequest(new Request(RequestType.TILE , cor));
@@ -287,14 +285,10 @@ public class Play extends GameState {
 					}
 					break;
 				case HARVEST:
-					if(ack.getAck()){
-						//i would like to add animation here
-					}
+					//i would like to add animation here
 					break;
 				case ATTACK:
-					if(ack.getAck()){
-						//i would like to add animation here
-					}
+					//i would like to add animation here
 					break;
 				default: break;
 				
