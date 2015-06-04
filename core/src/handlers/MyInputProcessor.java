@@ -50,9 +50,9 @@ public class MyInputProcessor extends Stage {
         if (button == Buttons.RIGHT){
         	MyInput.setMouseXY(MyInput.RIGHT_MOUSE,screenX, screenY);
         }
-//        if( button == Buttons.MIDDLE){
-//        	MyInput.setMouseXY(MyInput.WHEEL_MOUSE,screenX, screenY);
-//        }
+        if( button == Buttons.MIDDLE){
+        	MyInput.setMouseXY(MyInput.WHEEL_MOUSE,screenX, screenY);
+        }
         return super.touchDown(screenX, screenY, pointer, button);
     }
 	
