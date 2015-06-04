@@ -13,9 +13,10 @@ public class MyInput {
 	public static final int CANCEL_KEY = 4;
 	
 	
-	public static final int MOUSE_KEYS = 2;
+	public static final int MOUSE_KEYS = 3;
 	public static final int LEFT_MOUSE = 0;
 	public static final int RIGHT_MOUSE = 2;
+	public static final int WHEEL_MOUSE = 2;
 	
 	static {
 		keys = new boolean[NUM_KEYS];

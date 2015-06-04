@@ -1,12 +1,12 @@
 package states;
 
 import handlers.GameStateManager;
-import handlers.MyDialog;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
 
 import network.Connection;
+import utility.MyDialog;
 import utility.Utility;
 
 import com.badlogic.gdx.Gdx;

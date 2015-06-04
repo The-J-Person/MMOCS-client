@@ -1,10 +1,10 @@
 package states;
 
 import handlers.GameStateManager;
-import handlers.MyDialog;
 
 import java.util.LinkedList;
 
+import utility.MyDialog;
 import utility.Utility;
 
 import network.Connection;

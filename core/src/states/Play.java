@@ -3,7 +3,6 @@ package states;
 import handlers.Content;
 import handlers.GameMap;
 import handlers.GameStateManager;
-import handlers.MyDialog;
 import handlers.MyInput;
 import handlers.MyInputProcessor;
 
@@ -11,6 +10,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 
 import network.Connection;
+import utility.MyDialog;
 import utility.Recipe;
 import utility.Resources;
 import utility.Utility;
@@ -125,6 +125,10 @@ public class Play extends GameState {
 				}
 			}
 			
+		}
+		else if(MyInput.isMouseClicked(MyInput.RIGHT_MOUSE)){
+			selectedRes = null ;
+			isSelected = false;
 		}
 		if(MyInput.isPressed(MyInput.DOWN_KEY)){
 			player.act(map.getTile(
@@ -307,8 +311,8 @@ public class Play extends GameState {
 		button.addListener(new ClickListener() {
             
         	public void clicked(InputEvent event,float x,float y){
-        		if(list.getSelected() != null)
-        			selectedRes = list.getSelected().getResource();{
+        		if(list.getSelected() != null){
+        			selectedRes = list.getSelected().getResource();
         			isSelected = true;
         			}
         		openedWindow = false;
